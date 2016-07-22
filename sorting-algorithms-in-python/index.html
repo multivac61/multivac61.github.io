@@ -1,0 +1,270 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Sorting algorithms in Python</title>
+    <meta name="description" content="">
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=9684cc546d">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+
+    <link rel="canonical" href="index.html">
+    <meta name="referrer" content="origin-when-cross-origin">
+    
+    <meta property="og:site_name" content="Ólafur not Olaf">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Sorting algorithms in Python">
+    <meta property="og:description" content="Recently I've been doing some coding in Python but I felt like I didn't really understand what was going on. So as a way to better understand python's syntax and semantics I implemented a couple of the better known sorting algorithms - for fun and the greater good! This post">
+    <meta property="og:url" content="http://localhost:2368/sorting-algorithms-in-python/">
+    <meta property="article:published_time" content="2015-10-03T15:11:09.000Z">
+    <meta property="article:modified_time" content="2015-10-18T21:30:08.000Z">
+    <meta property="article:tag" content="python">
+    <meta property="article:tag" content="algorithms">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Sorting algorithms in Python">
+    <meta name="twitter:description" content="Recently I've been doing some coding in Python but I felt like I didn't really understand what was going on. So as a way to better understand python's syntax and semantics I implemented a couple of the better known sorting algorithms - for fun and the greater good! This post">
+    <meta name="twitter:url" content="http://localhost:2368/sorting-algorithms-in-python/">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="Olafur Bogason">
+    <meta name="twitter:label2" content="Filed under">
+    <meta name="twitter:data2" content="python, algorithms">
+    <meta name="twitter:site" content="@olafurbogason">
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Ólafur not Olaf",
+        "logo": "http://localhost:2368/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Olafur Bogason",
+        "url": "http://localhost:2368/author/olafur/",
+        "sameAs": []
+    },
+    "headline": "Sorting algorithms in Python",
+    "url": "http://localhost:2368/sorting-algorithms-in-python/",
+    "datePublished": "2015-10-03T15:11:09.000Z",
+    "dateModified": "2015-10-18T21:30:08.000Z",
+    "keywords": "python, algorithms",
+    "description": "Recently I&#x27;ve been doing some coding in Python but I felt like I didn&#x27;t really understand what was going on. So as a way to better understand python&#x27;s syntax and semantics I implemented a couple of the better known sorting algorithms - for fun and the greater good! This post"
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.9">
+    <link rel="alternate" type="application/rss+xml" title="Ólafur not Olaf" href="../rss/index.html">
+</head>
+<body class="post-template tag-python tag-algorithms nav-closed">
+
+    <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="index.html#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+            <li class="nav-home" role="presentation"><a href="../">Home</a></li>
+    </ul>
+        <a class="subscribe-button icon-feed" href="../rss/index.rss">Subscribe</a>
+</div>
+<span class="nav-cover"></span>
+
+
+    <div class="site-wrapper">
+
+        
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        
+            <a class="menu-button icon-menu" href="index.html#"><span class="word">Menu</span></a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+    <article class="post tag-python tag-algorithms">
+
+        <header class="post-header">
+            <h1 class="post-title">Sorting algorithms in Python</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2015-10-03">03 October 2015</time>  on <a href="../tag/python/">python</a>, <a href="../tag/algorithms/">algorithms</a>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Recently I've been doing some coding in Python but I felt like I didn't really understand what was going on. So as a way to better understand python's syntax and semantics I implemented a couple of the better known sorting algorithms - for fun and the greater good! This post showcases the code I wrote and talks about the hurdles I encountered while implementing the algorithms. This post is only meant to document my learning process of Python implementations and not really meant for learning about the mathematics behind the space- and time complexities of the different sort algorithms as I had already done that in my EE undergrad. All comments about implementation issues, bugs or pythonic styling are more than welcome!</p>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/200px-Python-logo-notext.svg.png" alt=""></p>
+
+<h2 id="thesimplersorts">The simpler sorts</h2>
+
+<p>As a start I decided to go with the simplest looking sorts, insertion- and selection sort. They are both O(n^2) in time complexity and thus rarely ever used on large datasets. Their implementation is however straight forward. It is noteworthy to point out that I wanted each function to return a <strong>new list of numbers</strong> and that the functions shouldn't mutate the list passed in at all.</p>
+
+<h4 id="insertionsort">Insertion sort</h4>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Insertion-sort-example-300px.gif" alt=""></p>
+
+<blockquote>
+  <p>Insertion sort is a simple sorting algorithm that builds the final sorted array (or list) one item at a time. It is much less efficient on large lists than more advanced algorithms such as quicksort, heapsort, or merge sort. - 
+  <a href="https://en.wikipedia.org/wiki/insertion_sort" title="Wikipedia: Insertion sort">Insertion sort</a></p>
+</blockquote>
+
+<p>The search iterates through the unsorted array. Each time it passes on of its elements to an inner function insert<em>_</em>item, which takes a list and element and inserts the element in the right place (as dictated by the passed in function sort<em>_</em>by).</p>
+
+<p>The sort<em>_</em>by function takes as a default an <a href="https://pythonconquerstheuniverse.wordpress.com/2011/08/29/lambda_tutorial/">lambda function</a> <code>(lambda a, b: a &lt; b)</code>. To those of you who haven't heard about the built-in lambda functions I encourage you to check them out. They can come in handy to build up simple functions in a lucid manner, when using def is simply too much.</p>
+
+<script src="https://gist.github.com/multivac61/844d95f5c8b4ef6e3938.js"></script>
+
+<h3 id="selectionsort">Selection sort</h3>
+
+<blockquote>
+  <p>The algorithm [selection sort] divides the input list into two parts: the sublist of items already sorted, which is built up from left to right at the front (left) of the list, and the sublist of items remaining to be sorted that occupy the rest of the list. - <a href="https://en.wikipedia.org/wiki/selection_sort" title="Wikipedia: Selection sort">selection sort</a></p>
+</blockquote>
+
+<p>My implementation  starts off with the passed-in list and copies all elements from the list into a new place in memory (very important so that we don't mutate the passed in list) and assigns that object to the variable initial<em>_</em>list. Then we iterate through that list and at each passing we find the "lowest" element as dictated by the sort<em>_</em>by function as before. We then append that element on the back of our sorted<em>_</em>list object and voilá! after passing through the outer loop once we have sorted the list passed in. We then return.</p>
+
+<script src="https://gist.github.com/multivac61/60a7a625dba405ce8976.js"></script>
+
+<hr>
+
+<h2 id="themoreefficientsorts">The more efficient sorts</h2>
+
+<p>Going on down the sorting algorithms difficulty-ladder we next encounter sorts with O(n log(n)) time-complexities. Here is where recursion comes in and the implementations begin to become more interesting and non trivial.</p>
+
+<h3 id="mergesort">Merge sort</h3>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Merge-sort-example-300px.gif" alt=""></p>
+
+<blockquote>
+  <p>Conceptually, a merge sort works as follows:</p>
+  
+  <ol>
+  <li>Divide the unsorted list into n sublists, each containing 1 element (a list of 1 element is considered sorted). </li>
+  <li>Repeatedly merge sublists to produce new sorted sublists until there is only 1 sublist remaining. This will be the sorted list. - <a href="https://en.wikipedia.org/wiki/merge_sort" title="Wikipedia: Merge sort">Merge sort</a></li>
+  </ol>
+</blockquote>
+
+<p>Merge sort was invented in the time of the tape machines by the legendary mathematician Jon von Neumann.</p>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/HD.3F.191_%2811239892036%29.jpg/383px-HD.3F.191_%2811239892036%29.jpg" alt="Jon von Neumann"></p>
+
+<p>My implementation gets straight to the point. First we split the list into single element list and then merge those small lists recursively so that at each point the smaller sub-lists are individually sorted. The function that has the merge functionality is maintained within the merge_sort function itself for brevity and as not to dirty our global name-space. </p>
+
+<script src="https://gist.github.com/multivac61/426262cb4897fd621316.js"></script>
+
+<h3 id="heapsort">Heap sort</h3>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Sorting_heapsort_anim.gif" alt=""></p>
+
+<blockquote>
+  <p>In computer science, heapsort is a comparison-based sorting algorithm. Heapsort can be thought of as an improved selection sort: like that algorithm, it divides its input into a sorted and an unsorted region, and it iteratively shrinks the unsorted region by extracting the largest element and moving that to the sorted region. The improvement consists of the use of a heap data structure rather than a linear-time search to find the maximum. - <a href="https://en.wikipedia.org/wiki/heap_sort" title="Wikipedia: Heap sort">heap sort</a></p>
+</blockquote>
+
+<p>The abstract description of heap sort may make it seem a little daunting but it really isn't much more complex than merge sort at all. The functionality I had to implement was <em>heapify</em>, take a list and make a <a href="https://en.wikipedia.org/wiki/Heap_%28data_structure%29">heap data structure</a> out of it and sift<em>_</em>down, a function that returns a heap into a legal state when the top element has been removed from it.</p>
+
+<p>My implementation goes like this: First create a heap using the <em>heapify</em> function, basically placing each item of the list at the bottom of the heap and then sift the elements up (incorrect elements down) until the inserted element is at a place so that the heap is valid. Next I remove the top node of the heap, which we know will be the lowest/highest/which ever way you want to sort your list, place it in a new sorted<em>_</em>list and then we make the heap valid again. We continue this procedure until there are no leafs left in the heap.</p>
+
+<script src="https://gist.github.com/multivac61/f9f5dbf066c0bc90bc24.js"></script>
+
+<h3 id="quicksort">Quick sort</h3>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Sorting_quicksort_anim.gif" alt=""></p>
+
+<blockquote>
+  <p>Quicksort is a divide and conquer algorithm. Quicksort first divides a large array into two smaller sub-arrays: the low elements and the high elements. Quicksort can then recursively sort the sub-arrays. The steps are:</p>
+  
+  <ol>
+  <li>Pick an element, called a pivot, from the array.</li>
+  <li>Reorder the array so that all elements with values less than the pivot come before the pivot, while all elements with values greater than the pivot come after it (equal values can go either way). After this partitioning, the pivot is in its final position. This is called the partition operation.</li>
+  <li>Recursively apply the above steps to the sub-array of elements with smaller values and separately to the sub-array of elements with greater values. - <a href="https://en.wikipedia.org/wiki/quick_sort" title="Wikipedia: Quick sort">Quick sort</a></li>
+  </ol>
+</blockquote>
+
+<p>I proceeded using a similar approach as I did in merge sort, the functions that do the heavy lifting are maintained within the quick_sort function itself. The implementation follows directly from the description on <a href="https://en.wikipedia.org/wiki/quick_sort" title="Wikipedia: Quick sort">Wikipedia</a> and I was lazy so I just chose the last element to always be the pivot in each sub-list that is to be sorted.</p>
+
+<script src="https://gist.github.com/multivac61/4be0963369db9ff59be0.js"></script>
+
+<p>One thing I noticed is that the python interpreter will throw the error <code>RuntimeError: maximum recursion depth exceeded in cmp</code> if the test cases I tried were too large. This doesn't mean that my implementation is buggy but simply that the interpreter has a default recursion depth which can be modified by the user. More about that <a href="http://stackoverflow.com/questions/25105541/python-quicksort-runtime-error-maximum-recursion-depth-exceeded-in-cmp">here</a></p>
+
+<hr>
+
+<p>These implementations were much easier than I had imagined and I didn't really have any big problems. Next up: code a Search class, implement the different algorithms there and do some testing! I also want to try and implement some of the AI search algorithms (A*, minimax &amp; alpha-beta pruning).</p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+                <h4><a href="../author/olafur/">Olafur Bogason</a></h4>
+
+                    <p>Read <a href="../author/olafur/">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/intent/tweet?text=Sorting%20algorithms%20in%20Python&amp;url=http://localhost:2368/sorting-algorithms-in-python/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/sorting-algorithms-in-python/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/sorting-algorithms-in-python/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+
+        </footer>
+
+    </article>
+</main>
+
+<aside class="read-next">
+    <a class="read-next-story no-cover" href="../note-to-self/">
+        <section class="post">
+            <h2>Note to self.self: List comprehensions in Python 2.x leak!</h2>
+            <p>After considerable amount of debugging on some code I've been writing in Python 2.x I finally found the…</p>
+        </section>
+    </a>
+</aside>
+
+
+
+        <footer class="site-footer clearfix">
+            <section class="copyright"><a href="../">Ólafur not Olaf</a> © 2016</section>
+            <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+        </footer>
+
+    </div>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-65029525-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=9684cc546d"></script>
+    <script type="text/javascript" src="../assets/js/index.js?v=9684cc546d"></script>
+
+</body>
