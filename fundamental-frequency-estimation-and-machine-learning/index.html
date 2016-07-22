@@ -1,0 +1,316 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Fundamental frequency estimation and supervised learning</title>
+    <meta name="description" content="">
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=9684cc546d">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+
+    <link rel="canonical" href="index.html">
+    <meta name="referrer" content="origin-when-cross-origin">
+    
+    <meta property="og:site_name" content="Ólafur not Olaf">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Fundamental frequency estimation and supervised learning">
+    <meta property="og:description" content="This post is a report on a final project I did in a music technology graduate seminar, MUMT-605, offered at McGill in the fall of 2015. Fundamental frequency estimation Fundamental frequency (f0) estimation (sometimes also called pitch detection, see Appendix A) has been an active topic of research within the">
+    <meta property="og:url" content="http://localhost:2368/fundamental-frequency-estimation-and-machine-learning/">
+    <meta property="og:image" content="http://localhost:2368/content/images/2016/07/xbanner-png-pagespeed-ic-CQyvJM1PgS.png">
+    <meta property="article:published_time" content="2015-12-18T10:53:44.000Z">
+    <meta property="article:modified_time" content="2016-07-22T16:56:58.000Z">
+    <meta property="article:tag" content="python">
+    <meta property="article:tag" content="Audio Signal Processing">
+    <meta property="article:tag" content="Machine Learning">
+    <meta property="article:tag" content="McGill">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Fundamental frequency estimation and supervised learning">
+    <meta name="twitter:description" content="This post is a report on a final project I did in a music technology graduate seminar, MUMT-605, offered at McGill in the fall of 2015. Fundamental frequency estimation Fundamental frequency (f0) estimation (sometimes also called pitch detection, see Appendix A) has been an active topic of research within the">
+    <meta name="twitter:url" content="http://localhost:2368/fundamental-frequency-estimation-and-machine-learning/">
+    <meta name="twitter:image" content="http://localhost:2368/content/images/2016/07/xbanner-png-pagespeed-ic-CQyvJM1PgS.png">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="Olafur Bogason">
+    <meta name="twitter:label2" content="Filed under">
+    <meta name="twitter:data2" content="python, Audio Signal Processing, Machine Learning, McGill">
+    <meta name="twitter:site" content="@olafurbogason">
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Ólafur not Olaf",
+        "logo": "http://localhost:2368/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Olafur Bogason",
+        "url": "http://localhost:2368/author/olafur/",
+        "sameAs": []
+    },
+    "headline": "Fundamental frequency estimation and supervised learning",
+    "url": "http://localhost:2368/fundamental-frequency-estimation-and-machine-learning/",
+    "datePublished": "2015-12-18T10:53:44.000Z",
+    "dateModified": "2016-07-22T16:56:58.000Z",
+    "image": "http://localhost:2368/content/images/2016/07/xbanner-png-pagespeed-ic-CQyvJM1PgS.png",
+    "keywords": "python, Audio Signal Processing, Machine Learning, McGill",
+    "description": "This post is a report on a final project I did in a music technology graduate seminar, MUMT-605, offered at McGill in the fall of 2015. Fundamental frequency estimation Fundamental frequency (f0) estimation (sometimes also called pitch detection, see Appendix A) has been an active topic of research within the"
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.9">
+    <link rel="alternate" type="application/rss+xml" title="Ólafur not Olaf" href="../rss/index.html">
+</head>
+<body class="post-template tag-python tag-audio-signal-processing tag-machine-learning tag-mcgill nav-closed">
+
+    <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="index.html#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+            <li class="nav-home" role="presentation"><a href="../">Home</a></li>
+    </ul>
+        <a class="subscribe-button icon-feed" href="../rss/index.rss">Subscribe</a>
+</div>
+<span class="nav-cover"></span>
+
+
+    <div class="site-wrapper">
+
+        
+
+
+<header class="main-header post-head " style="background-image: url(../content/images/2016/07/xbanner-png-pagespeed-ic-CQyvJM1PgS.png)">
+    <nav class="main-nav overlay clearfix">
+        
+            <a class="menu-button icon-menu" href="index.html#"><span class="word">Menu</span></a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+    <article class="post tag-python tag-audio-signal-processing tag-machine-learning tag-mcgill">
+
+        <header class="post-header">
+            <h1 class="post-title">Fundamental frequency estimation and supervised learning</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2015-12-18">18 December 2015</time>  on <a href="../tag/python/">python</a>, <a href="../tag/audio-signal-processing/">Audio Signal Processing</a>, <a href="../tag/machine-learning/">Machine Learning</a>, <a href="../tag/mcgill/">McGill</a>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p><em>This post is a report on a final project I did in a music technology graduate seminar, <a href="http://www.music.mcgill.ca/~depalle/MUMT605.html">MUMT-605</a>, offered at McGill in the fall of 2015.</em></p>
+
+<h2 id="fundamentalfrequencyestimation">Fundamental frequency estimation</h2>
+
+<p>Fundamental frequency (<strong>f0</strong>) estimation (sometimes also called pitch detection, see Appendix A) has been an <a href="http://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&amp;queryText=Fundamental%20frequency%20estimation">active topic of research</a> within the field of audio signal processing for many years. Currently there exist literally hundreds of estimation methods that most do fairly well when the sound source is monophonic and noiseless but tend to differ greatly in accuracy when applied in less ideal situations [1, 4].</p>
+
+<p>Given adequate data and labels <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised learning</a> is a very interesting method to explore in the context of fundamental frequency estimation as it has the potential to combine the information gained from individual methods and use it to come up with a more precise estimate. It could learn which methods to <em>trust</em> under certain circumstances and which not to and then use the model that has been learned when it is predicting output frequencies for inputs that it hasn't seen before.</p>
+
+<p>In this post I will  discuss five f0 methods and their individual strengths and weaknesses. From there on I briefly introduce supervised machine learning and mention how concepts therein could be used to augment the performance of current estimation methods. I conclude with a case study.</p>
+
+<h2 id="estimationmethods">Estimation methods</h2>
+
+<p>Fundamental frequency estimators can be split roughly into two categories: time domain based estimators (looking at the incoming waveform) and frequency domain based estimators (looking at the frequency spectrum) or sometimes the methods used are a <a href="https://en.wikipedia.org/wiki/Pitch_detection_algorithm#Spectral.2Ftemporal_approaches">combination of methods</a> from both categories. Some authors also mention yet another category, <em>probabilistic methods</em> [1,5,11], but they are, not surprisingly, always a member of either or both time- or frequency domain categories. </p>
+
+<p>Methods in both categories have their advantages and disadvantages. The time domain based estimators are exceedingly simple to understand and implement and are computationally cheap [1]. They however lack robustness when noise or polyphonic sounds are present in the input signal. The more up to date time domain estimators have been augmented to bring performance closer to human assessment of pitch [6,7,8]. On the other hand frequency domain methods tend to show more resilience to noise and some can even be used for polyphonic fundamental frequency estimation [8,9]. Frequency domain methods tend to be mathematically more involved and also computationally heavier than time-domain methods.</p>
+
+<p>It is outside the scope of this report to give a thorough explanation of all fundamental frequency estimators. I will limit myself to a brief summary of five well known fundamental frequency estimation methods. Two of them, counting zero crossings and autocorrelation belong to the time domain category and the remaining methods belong to the frequency-domain category.</p>
+
+<h4 id="timedomainbasedestimators">Time domain based estimators</h4>
+
+<p><strong>Zero-crossing rate (ZCR)</strong> - Using the fact that fundamental frequency is the reciprocal of the longest repeating period in a signal we can count the times a signal crosses the time axis. The zero crossing patterns that emerge can then be used to estimate f0, that is we can count rising- or falling edge crossings and use the rate at which they occur to estimate the fundamental frequency.</p>
+
+<p><img src="../content/images/2016/07/ZCR.png" alt=""></p>
+
+<p>ZCR is computationally inexpensive and can be implemented in O(N) <a href="https://en.wikipedia.org/wiki/Big_O_notation">time complexity</a>. It tends to do poorly when the signal has additional high-frequency components (as many real world signals do) because then there can exist multiple zero crossings per cycle. The effects of the high-frequency components can be mitigated by pre-processing the signal before applying the algorithm. This method is thus <strong>very sensitive</strong> to noise and fluctuations in instantaneous frequency [1].</p>
+
+<script src="https://gist.github.com/multivac61/8a259df0bc975f605db7.js"></script>
+
+<p><strong>Autocorrelation (AC)</strong> is a function of of how <em>similar</em> a signal is to a delayed version of itself [11]. Figuring out the position of the first peak in the AC (the shortest time lag where the signal repeats) can be used to estimate the period of the incoming wave.</p>
+
+<p><img src="../content/images/2016/07/AC.png" alt=""></p>
+
+<p>AC can be <a href="https://en.wikipedia.org/wiki/Autocorrelation#Efficient_computation">computed at O(N log(N))</a> and is a great method for finding the fundamental even when the incoming signal has strong harmonics, a missing fundamental or contains noise [6]. One drawback of the AC method is that it may erroneously choose a peak relating to a higher-order partial instead of the fundamental frequency. A method called YIN [7] was developed in 2002 to enhance the performance of AC and is now more commonly used than AC.</p>
+
+<script src="https://gist.github.com/multivac61/dfdde2b142dfaa8b9224.js"></script>
+
+<h4 id="frequencydomainbasedestimators">Frequency domain based estimators</h4>
+
+<p><strong>Finding global peak in FFT (FFT)</strong>: FFT is applied to a windowed input signal and the frequency bin containing the most energy is used to find the peak frequency. Some sort of of <a href="https://en.wikipedia.org/wiki/Linear_interpolation">interpolation</a> can also be used to get more precise result. </p>
+
+<p><img src="../content/images/2016/07/fft.png" alt=""></p>
+
+<p>FFT can yield poor results when the fundamental frequency does not fall in a frequency bin which has the highest energy or is <a href="https://en.wikipedia.org/wiki/Missing_fundamental">not present at all</a>. </p>
+
+<script src="https://gist.github.com/multivac61/979d86686748cb6bace7.js"></script>
+
+<p><strong>Harmonic product spectrum (HPS)</strong>: A method based around the fact that many real world signals have frequency harmonics (the sinusoids above the fundamental) located at some real value multiple of the fundamental frequency. The frequency spectrum is found and under-sampled at integer values. These spectrums are then multiplied together. The frequency bin containing the peak of the multiplied signal is estimated to be the fundamental frequency, which makes sense since higher frequency harmonics are often in linear relationship with the fundamental frequency. For a better explanation please refer to <a href="http://cnx.org/contents/i5AAkZCP@2/Pitch-Detection-Algorithms">[6]</a>. </p>
+
+<p><img src="../content/images/2016/07/hps.png" alt=""></p>
+
+<p>HPS works well for signals where there harmonics are in some linear relationship with the fundamental and can be implemented to perform in O(N log(N)) time. One shortcoming of this approach is that we have to know before hand approximately how many harmonic partials are in the input signal (how many times we should undersample the spectrum). If the signal contains a lot of low frequency noise, that can also distort the estimation.</p>
+
+<script src="https://gist.github.com/multivac61/24c77d532655b28301a5.js"></script>
+
+<p><strong>Cepstrum (CEPS)</strong>: First the complex <a href="https://en.wikipedia.org/wiki/Cepstrum">cepstrum</a> is calculated and then the sample corresponding to a peak within a sub-interval which is chosen so that it <em>should</em> contain the fundamental frequency. The location of the peak within the interval is then used to estimate the fundamental frequency. The clarinet for example has a frequency range of approx. 125Hz - 2K so at a sampling frequency of 44.1kHz we should search for the peak within the interval [22, 353] samples.</p>
+
+<p><img src="../content/images/2016/07/cepstrum.png" alt=""></p>
+
+<p>I found that CEPS works very well when the fundamental is low (440 Hz or lower in the case of the clarinet) but typically underestimates the fundamental when the incoming signal has <em>higher</em> frequency (800 Hz or higher in the case of the clarinet) [2].</p>
+
+<script src="https://gist.github.com/multivac61/4844b58a9c4594102c2d.js"></script>
+
+<h5 id="preprocessingtheinputsignal">Preprocessing the input signal</h5>
+
+<p>Most of the algorithms above will benefit from some kind of preprocessing of input signal. I found it to be beneficial to bandpass the input signals at cutoff-frequencies lower/higher than the  highest/lowest note I wanted to be able to estimate. This process got rid of DC components and high-frequency noise which some methods are very sensitive to (i.e. ZCR). The only method that may suffer from bandpass filtering is <strong>HPS</strong> as it bases its estimation on high frequency harmonics. Other form of preprocessing include other kinds of filtering or smoothing of the signal.</p>
+
+<h3 id="supervisedlearning">Supervised learning</h3>
+
+<p>In short <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised learning</a> can be described as following: we provide the algorithm with some training data in the form of a feature vector (input data) and target vector (labelled output to given input data). The algorithm then "analyses the training data and produces an inferred function, which can be used for mapping new examples." [10] The mapping can be discrete and then the algorithm is called <em>classification</em>, or continuous, as in the case of frequency, and then the algorithm is referred to as <em>regression</em>.</p>
+
+<h3 id="casestudy">Case study</h3>
+
+<p>As an example of applying supervised learning to a setting within fundamental frequency estimation I decided to try to estimate the fundamental of monophonic signals from musical instruments.</p>
+
+<p>The data for the case study I got from <a href="http://theremin.music.uiowa.edu/MIS.html">University of Iowa, Musical Instrument Samples webpage</a>. The site contains a database of recordings of numerous musical instruments. The recordings I used contained single notes of the <a href="https://en.wikipedia.org/wiki/Chromatic_scale">chromatic scale</a> played on various musical instruments. Conveniently the recordings have a <em>ground truth</em> (or so we will assume) frequency in their filenames.</p>
+
+<p>I am not an expert on machine learning and so the underlying algorithms I will assume to be <em>black boxes</em>. After searching around I experimented with two regression methods from the <a href="http://scikit-learn.org/stable/index.html">scikit-learn</a> [3] python package. The first approach I tried was a <a href="https://en.wikipedia.org/wiki/Bayesian_linear_regression">Bayesian linear regression</a> (<strong>BLR</strong>) and the second one was a <a href="https://en.wikipedia.org/wiki/Support_vector_machine">support vector machine</a> along with a <a href="https://en.wikipedia.org/wiki/Radial_basis_function_kernel">Radial basis function kernel</a> (<strong>SVR</strong>). I chose these two because they offer example of linear- (BLR) and non-linear (SVR) regression and I wanted to see how the two approaches performed.</p>
+
+<p>I implemented the algorithms explained earlier in python, building on the code snippet found <a href="https://gist.github.com/endolith/255291">here</a>. I then iterated through the various signals using a window size of 2048 samples, applying the algorithms on these samples and then saving the estimated frequencies in a feature vector as well as the target frequency which I extracted from the filenames.</p>
+
+<p>Using the scikit-learn package I trained both of the regression models with about 5/6 of the data I had gathered. I then used the remaining data to predict the fundamental frequency on a couple of individual instruments and also all of them together. Finally I calculated the RMS value for each method with respect to the <em>ground truth</em> frequency given in the filenames.</p>
+
+<h4 id="rmsbargraphs">RMS bar graphs</h4>
+
+<p><img src="../content/images/2016/07/all.png" alt=""></p>
+
+<p><img src="../content/images/2016/07/TenorTrombone-ff-stereo-4.png" alt=""></p>
+
+<p><img src="../content/images/2016/07/Xylophone-hardrubber-ff-stereo-2.png" alt=""></p>
+
+<p><img src="../content/images/2016/07/Violin-arco-ff-sulG-stereo-2.png" alt=""></p>
+
+<p><img src="../content/images/2016/07/EbClarinet-ff-stereo-4.png" alt=""></p>
+
+<p><img src="../content/images/2016/07/bells-plastic-ff-stereo-1.png" alt=""></p>
+
+<h5 id="nopreprocessing">No preprocessing</h5>
+
+<p><img src="../content/images/2016/07/bells-plastic-ff-stereo-no_prep.png" alt=""></p>
+
+<h4 id="resultsandpossibleimprovements">Results and possible improvements</h4>
+
+<p>It should be noted that the quality of the methods are all dependent on how well the frequency of the original signal was labelled. Often, many of the algorithms I implemented agreed on a frequency within ~2 Hz of relative error whereas the target frequency was way off. Since there exist no silver bullet estimation method for f0 estimation, generating accurate labels could be bothersome and difficult (i.e. doing it by hand) which is the biggest drawback for the supervised learning method. Gross error might also give a more meaningful estimate of relative error than RMS.</p>
+
+<p>A short glance over the bar graphs suggests that the BLR or SVR methods perform with the least RMS error for all methods except the "bells.plastic.ff.stereo" group of signals. The advantages and disadvantages of the estimation methods are also visible when comparing the graphs. For the signal groups which have most of their energy in the fundamental frequency such as "bells.plastic.ff.stereo" and "Xylophone.hardrubber.ff.stereo" which can be though of as simply exponentially decaying sinusoids (see "bells.plastic.ff.A5.stereo.wav" wavefrom graph).</p>
+
+<p><img src="../content/images/2016/07/bells.png" alt=""></p>
+
+<p>The group of signals where the time-domain methods tend to do well all have waveform that have very clear zero-crossings, such as is the case in the "TenorTrombone.ff.A3.stereo.wav" waveform. It came as no surprise that when a group of signals that don't have complex spectra but most of the energy contained in the fundamental frequency both HPS and CEPS methods perform much worse than for signals with complex frequency spectra. </p>
+
+<p><img src="../content/images/2016/07/trombone.png" alt=""></p>
+
+<p>The regression methods I used are only two of a myriad of methods that exist within the vast field of supervised learning. It would be very interesting to do more research on the methods that exists such as <a href="https://en.wikipedia.org/wiki/Random_forest">random forest</a>. It would also be interesting to experiment with other feature spaces, not just the output of the f0 estimators. An example could be the number of zero crossings per M samples.</p>
+
+<h2 id="references">References</h2>
+
+<p><code>[1] D. Gerhard. Pitch Extraction and Fundamental Frequency: History and Current Techniques, technical report, Dept. of Computer Science, University of Regina, 2003.
+[2] G. Middleton. Pitch Detection Algorithms, online resource from Connexions. Downloaded from [http://cnx.org/contents/i5AAkZCP@2/Pitch-Detection-Algorithms](http://cnx.org/contents/i5AAkZCP@2/Pitch-Detection-Algorithms) on December 10th 2015.
+[3] Scikit-learn: Machine Learning in Python, Pedregosa et al., JMLR 12, pp. 2825-2830, 2011.
+[4] P. Cuadra. Pitch Detection Methods Review. Downloaded from https://ccrma.stanford.edu/~pdelac/154/m154paper.htm on December 11th 2015.
+[5] S. Brown. General Acoustics - Frequency Range of Vocals and Musical Instruments. Downloaded from http://www.listenhear.co.uk/general_acoustics.htm on December 16th 2015.
+[6] Hajime Sano and B. Keith Jenkins. A neural network model for pitch perception. *Computer Music Journal*, 13(3):41-48, Fall 1989
+[7] A. de Cheveigné and H. Kawahara. YIN, a fundamental frequency estimator for speech and music. *The Journal of the Acoustical Society of America*, 111:1917, 2002. 
+[8] S. Kraft, U. Zölzer. Polyphonic Pitch Detection by Iterative Analysis of the Autocorrelation Function. *DAFx-14, Erlangen, Germany, September 1-5, 2014*.
+[9] R. Toy, R. Kailath. ESPRIT - Estimation of Signal Parameters Via Rotational Invariance Techniques. *IEEE Transactions of Acoustics, Speech and Signal Processing. Vol. 37, No. 7, July 1989*.
+[10] Wikipedia contributors. "Supervised learning". Wikipedia, The Free Encyclopedia. Wikipedia, The Free Encyclopedia, 28 Oct. 2015. Web. 17 Dec. 2015. 
+[11] A. Röbel. Fundamental frequency estimation. *Summer 2006 lecture on analysis,
+modeling and transformation of audio signal*. Downloaded from http://recherche.ircam.fr/anasyn/roebel/amt_audiosignale/VL5.pdf on December 13th 2015.</code></p>
+
+<h4 id="appendixafrequencyandpitcharenotthesamething">Appendix A: Frequency and pitch are not the same thing</h4>
+
+<p>In fundamental frequency estimation literature there is a common misconception that frequency is the same as pitch. Frequency is defined as the reciprocal of a period and has nothing to do with human perception, which pitch however does. Pitch is how we humans perceive frequency psychoacoustically.</p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+                <h4><a href="../author/olafur/">Olafur Bogason</a></h4>
+
+                    <p>Read <a href="../author/olafur/">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/intent/tweet?text=Fundamental%20frequency%20estimation%20and%20supervised%20learning&amp;url=http://localhost:2368/fundamental-frequency-estimation-and-machine-learning/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/fundamental-frequency-estimation-and-machine-learning/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/fundamental-frequency-estimation-and-machine-learning/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+
+        </footer>
+
+    </article>
+</main>
+
+<aside class="read-next">
+    <a class="read-next-story " style="background-image: url(../content/images/2016/07/xbanner-png-pagespeed-ic-vwvPZDSJ9k-1.png)" href="../emulating-op-amp-circuits-using-wdf-theory/">
+        <section class="post">
+            <h2>Digitizing analog circuits containing op amps using Wave Digital Filters</h2>
+            <p>In this post I will share some work I have been doing on Wave Digital Filters, or WDFs for…</p>
+        </section>
+    </a>
+    <a class="read-next-story prev no-cover" href="../knights_tour/">
+        <section class="post">
+            <h2>A Knight's Tour</h2>
+            <p>Another interesting problem relating to classical search in AI is the Knight's Tour.   A knight's tour is a sequence…</p>
+        </section>
+    </a>
+</aside>
+
+
+
+        <footer class="site-footer clearfix">
+            <section class="copyright"><a href="../">Ólafur not Olaf</a> © 2016</section>
+            <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+        </footer>
+
+    </div>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-65029525-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=9684cc546d"></script>
+    <script type="text/javascript" src="../assets/js/index.js?v=9684cc546d"></script>
+
+</body>

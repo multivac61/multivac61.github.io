@@ -1,0 +1,265 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Digitizing analog circuits containing op amps using Wave Digital Filters</title>
+    <meta name="description" content="">
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=9684cc546d">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+
+    <link rel="canonical" href="index.html">
+    <meta name="referrer" content="origin-when-cross-origin">
+    
+    <meta property="og:site_name" content="Ólafur not Olaf">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Digitizing analog circuits containing op amps using Wave Digital Filters">
+    <meta property="og:description" content="In this post I will share some work I have been doing on Wave Digital Filters, or WDFs for short. WDFs allows one to digitize analog reference circuits in a way that retains the underlying topology, has nice numerical properties, allows for breaking up of annoying delay-free loops when digitizing">
+    <meta property="og:url" content="http://localhost:2368/emulating-op-amp-circuits-using-wdf-theory/">
+    <meta property="og:image" content="http://localhost:2368/content/images/2016/07/xbanner-png-pagespeed-ic-vwvPZDSJ9k-1.png">
+    <meta property="article:published_time" content="2016-03-20T18:41:16.000Z">
+    <meta property="article:modified_time" content="2016-07-22T17:00:02.000Z">
+    <meta property="article:tag" content="WDF">
+    <meta property="article:tag" content="DSP">
+    <meta property="article:tag" content="Audio Signal Processing">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Digitizing analog circuits containing op amps using Wave Digital Filters">
+    <meta name="twitter:description" content="In this post I will share some work I have been doing on Wave Digital Filters, or WDFs for short. WDFs allows one to digitize analog reference circuits in a way that retains the underlying topology, has nice numerical properties, allows for breaking up of annoying delay-free loops when digitizing">
+    <meta name="twitter:url" content="http://localhost:2368/emulating-op-amp-circuits-using-wdf-theory/">
+    <meta name="twitter:image" content="http://localhost:2368/content/images/2016/07/xbanner-png-pagespeed-ic-vwvPZDSJ9k-1.png">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="Olafur Bogason">
+    <meta name="twitter:label2" content="Filed under">
+    <meta name="twitter:data2" content="WDF, DSP, Audio Signal Processing">
+    <meta name="twitter:site" content="@olafurbogason">
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Ólafur not Olaf",
+        "logo": "http://localhost:2368/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Olafur Bogason",
+        "url": "http://localhost:2368/author/olafur/",
+        "sameAs": []
+    },
+    "headline": "Digitizing analog circuits containing op amps using Wave Digital Filters",
+    "url": "http://localhost:2368/emulating-op-amp-circuits-using-wdf-theory/",
+    "datePublished": "2016-03-20T18:41:16.000Z",
+    "dateModified": "2016-07-22T17:00:02.000Z",
+    "image": "http://localhost:2368/content/images/2016/07/xbanner-png-pagespeed-ic-vwvPZDSJ9k-1.png",
+    "keywords": "WDF, DSP, Audio Signal Processing",
+    "description": "In this post I will share some work I have been doing on Wave Digital Filters, or WDFs for short. WDFs allows one to digitize analog reference circuits in a way that retains the underlying topology, has nice numerical properties, allows for breaking up of annoying delay-free loops when digitizing"
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.9">
+    <link rel="alternate" type="application/rss+xml" title="Ólafur not Olaf" href="../rss/index.html">
+</head>
+<body class="post-template tag-wdf tag-dsp tag-audio-signal-processing nav-closed">
+
+    <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="index.html#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+            <li class="nav-home" role="presentation"><a href="../">Home</a></li>
+    </ul>
+        <a class="subscribe-button icon-feed" href="../rss/index.rss">Subscribe</a>
+</div>
+<span class="nav-cover"></span>
+
+
+    <div class="site-wrapper">
+
+        
+
+
+<header class="main-header post-head " style="background-image: url(../content/images/2016/07/xbanner-png-pagespeed-ic-vwvPZDSJ9k-1.png)">
+    <nav class="main-nav overlay clearfix">
+        
+            <a class="menu-button icon-menu" href="index.html#"><span class="word">Menu</span></a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+    <article class="post tag-wdf tag-dsp tag-audio-signal-processing">
+
+        <header class="post-header">
+            <h1 class="post-title">Digitizing analog circuits containing op amps using Wave Digital Filters</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2016-03-20">20 March 2016</time>  on <a href="../tag/wdf/">WDF</a>, <a href="../tag/dsp/">DSP</a>, <a href="../tag/audio-signal-processing/">Audio Signal Processing</a>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>In this post I will share some work I have been doing on Wave Digital Filters, or WDFs for short. WDFs allows one to digitize analog reference circuits in a way that retains the underlying topology, has nice numerical properties, allows for breaking up of annoying delay-free loops when digitizing and has a very nice modular way of dealing with non-linearities. I will not explain the basic WDF theory here but if you are interested the <a href="http://www.eit.lth.se/fileadmin/eit/courses/eit085f/Fettweis_Wave_Digital_Filters_Theory_and_Practice_IEEE_Proc_1986_-_This_is_a_real_challange.pdf">omnipotent paper</a> on the subject written by Fettweis, the creator of WDF, or <a href="https://ccrma.stanford.edu/~dtyeh/papers/wdftutorial.pdf">this tutorial on WDF</a> should get you familiar with the topic.</p>
+
+<p>Until very recently the WDF formalism has only worked on reference circuits that can be decomposed into parallel or series sub-circuits. Since many circuits in the wild have much more complicated topologies, the scope of reference circuits available for digital modelling using WDF has been very limited. Late last year there was a paper published called <a href="https://www.ntnu.edu/documents/1001201110/1266017954/DAFx-15_submission_53.pdf/a559ce90-d16b-49a3-a267-5b877d7fe70b">Wave Digital Filter Adaptors for Arbitraty Topologies and Multiport Linear Elements</a>. In it this issue was addressed by showing how arbitrary topologies may be handled within the WDF formalism. That was achieved by some cleaver usage of the ubiquitous <a href="https://en.wikipedia.org/wiki/Modified_nodal_analysis">MNA method</a>. In essence the method starts out with a reference circuit, extracts all series/parallel sub-circuits and uses the MNA method on the remaining components and connections. The trick is to allow active elements to clump up inside the non series/parallel adaptors, commonly known as R-type (rigid) adaptors and then figure out how the outcoming waves depend on the incoming ones (scattering matrix).</p>
+
+<p>Now I will give two examples of how to use this new method on circuits previously unobtainable under the WDF formalism. To warm up I will start off by coming up with a WDF structure for the <a href="https://en.wikipedia.org/wiki/Buffer_amplifier">buffer amplifier</a>. </p>
+
+<h3 id="opampbuffercircuit">Op amp buffer circuit</h3>
+
+<p>Following the steps developed in <em>Wave Digital Filter Adaptors for Arbitraty Topologies..</em> I start out with a reference circuit, then approximate the op amp using a simple op amp model. I use a <em>infinitely</em> large resistor between the input poles so that I can use it when adapting for the port facing the voltage source (the only non-linear element that needs adapting).</p>
+
+<p><img src="../content/images/2016/07/wdf_buffer1.png" alt=""></p>
+
+<p><img src="../content/images/2016/07/wdf_buffer2.png" alt=""></p>
+
+<p><img src="../content/images/2016/07/wdf_buffer1_approx.png" alt=""></p>
+
+<p>The next step is to form a so called replacement graph and find split components within it. The series/parallel adaptors that I find I remove from the graph and the remaining connections will fall inside the R-type adaptor we have to derive (it is impossible to further decompose the connections into more series/parallel connectors).</p>
+
+<p><img src="../content/images/2016/07/wdf_buffer3.png" alt=""></p>
+
+<p>Now that we have the two WDF adaptors (series S, and a rigid one R) found in the approximated reference circuit we can find how incoming/outgoing waves are reflected when they reach the R-type adaptor. We do that by finding the scattering matrix which is obtainable by using <a href="http://www.swarthmore.edu/NatSci/echeeve1/Ref/mna/MNA5.html">Modified Nodal Analysis</a>. I chose to adapt the scattering matrix to the input voltage source instead of using a resistive voltage source for simplicity's sake.</p>
+
+<p><img src="../content/images/2016/07/wdf_buffer4.png" alt="">
+This is the underlying WDF structure.</p>
+
+<p><img src="../content/images/2016/07/wdf_buffer5.png" alt="">
+Place a voltage source and resistor on all ports and then populate the MNA matrix.</p>
+
+<p><img src="../content/images/2016/07/wdf_buffer6.png" alt="">
+Modified Nodal Analysis matrix which we can use to figure out the scattering matrix.</p>
+
+<p><img src="../content/images/2016/07/wdf_buffer7.png" alt="">
+Here is the SPQR tree that indicates how the computation of the WDF structure can be done. In each iteration the waves travel from the lowest part of the tree all the way to the top and then back after the input signal has been injected.</p>
+
+<h4 id="softwareimplementation">Software implementation</h4>
+
+<p>Next I implemented the WDF model in Matlab code along with a simple LTspice simulation. Then I plotted the frequency response..</p>
+
+<p><img src="../content/images/2016/07/wdf_volt_follower.png" alt=""></p>
+
+<p>As expected the buffer circuit holds the input at unity for all frequencies and the frequency response is visually not different from the <em>ground truth</em> LTspice simulation.</p>
+
+<h3 id="sallenkeylowpassfilter">Sallen-Key low pass filter</h3>
+
+<p>Next I move on to a bit more interesting reference circuit, the <a href="https://en.wikipedia.org/wiki/Sallen%E2%80%93Key_topology#Application:_Low-pass_filter">lowpass Sallen-Key filter</a>. The steps are exactly the same as above.</p>
+
+<p><img src="../content/images/2016/07/wdf_sk1.png" alt="">
+We start out with a reference circuit..</p>
+
+<p><img src="../content/images/2016/07/wdf_sk2.png" alt="">
+Approximate the op amp like before..</p>
+
+<p><img src="../content/images/2016/07/wdf_sk_spqr.png" alt="">
+Generate the reference graph and find split components (again one series and one R-type adaptor)...</p>
+
+<p><img src="../content/images/2016/07/wdf_sk5.png" alt=""></p>
+
+<p><img src="../content/images/2016/07/wdf_sk4.png" alt=""></p>
+
+<p><img src="../content/images/2016/07/wdf_buffer6-1.png" alt="">
+Populate the MNA matrix and write out the SPQR tree.</p>
+
+<p><img src="../content/images/2016/07/wdf_sk3.png" alt=""></p>
+
+<h4 id="softwareimplementation">Software implementation</h4>
+
+<p>Again I coded up the WDF strucute and compared its frequency response with frequency response coming from LTspice. <br>
+<img src="../content/images/2016/07/wdf_sallen_key_lp.png" alt=""></p>
+
+<h2 id="demos">Demos</h2>
+
+<p>Just to give a simple demo I put a funk drum beat and put it through the Sallen-Key lowpass filter WDF structure with a cutoff frequency of ~1 kHz.  </p>
+
+<iframe width="100%" height="450" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/207645541&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>
+
+<h3 id="finalthoughts">Final thoughts</h3>
+
+<p>There are still many circuits that are impossible to model using state-of-the-art WDF theory. An example are circuits that have global feedback (such as the MS-20 filter). Fundamental research in the field is active at the moment and hopefully within a few years those circuits will also be able to model using WDFs.</p>
+
+<p>A big shout out goes to <a href="https://ccrma.stanford.edu/~kwerner/">Kurt James Werner</a> for help and support down the WDF rabbit.</p>
+
+<p>Thank you for reading through and if you have any thoughts please share them in the comment section below.</p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+                <h4><a href="../author/olafur/">Olafur Bogason</a></h4>
+
+                    <p>Read <a href="../author/olafur/">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/intent/tweet?text=Digitizing%20analog%20circuits%20containing%20op%20amps%20using%20Wave%20Digital%20Filters&amp;url=http://localhost:2368/emulating-op-amp-circuits-using-wdf-theory/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/emulating-op-amp-circuits-using-wdf-theory/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/emulating-op-amp-circuits-using-wdf-theory/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+
+        </footer>
+
+    </article>
+</main>
+
+<aside class="read-next">
+    <a class="read-next-story " style="background-image: url(../content/images/2016/07/xprototyping1_CROP-jpg-pagespeed-ic-JMdLXlgANs.jpg)" href="../modern_hardware_prototyping/">
+        <section class="post">
+            <h2>Intro to modern hardware prototyping</h2>
+            <p>This post is a brief overview of hardware (HW) prototyping. It is meant for individuals or teams that are…</p>
+        </section>
+    </a>
+    <a class="read-next-story prev " style="background-image: url(../content/images/2016/07/xbanner-png-pagespeed-ic-CQyvJM1PgS.png)" href="../fundamental-frequency-estimation-and-machine-learning/">
+        <section class="post">
+            <h2>Fundamental frequency estimation and supervised learning</h2>
+            <p>This post is a report on a final project I did in a music technology graduate seminar, MUMT-605, offered…</p>
+        </section>
+    </a>
+</aside>
+
+
+
+        <footer class="site-footer clearfix">
+            <section class="copyright"><a href="../">Ólafur not Olaf</a> © 2016</section>
+            <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+        </footer>
+
+    </div>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-65029525-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=9684cc546d"></script>
+    <script type="text/javascript" src="../assets/js/index.js?v=9684cc546d"></script>
+
+</body>

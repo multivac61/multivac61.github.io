@@ -1,0 +1,493 @@
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>Ólafur not Olaf</title><description>Ólafur not Olaf</description><link>http://localhost:2368/</link><generator>Ghost 0.9</generator><lastBuildDate>Fri, 22 Jul 2016 17:19:50 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title>Intro to modern hardware prototyping</title><description>&lt;p&gt;This post is a brief overview of hardware (HW) prototyping. It is meant for individuals or teams that are starting their journey into the magical forest of HW prototyping. The topic is huge and it is impossible to cover all aspects of it in a blog post. Your situation, needs&lt;/p&gt;</description><link>http://localhost:2368/modern_hardware_prototyping/</link><guid isPermaLink="false">1a298262-0688-479b-a541-cedc680978f7</guid><category>hwstartup</category><category>prototyping</category><category>hardware</category><dc:creator>Olafur Bogason</dc:creator><pubDate>Tue, 12 Jul 2016 15:17:55 GMT</pubDate><media:content url="http://localhost:2368/content/images/2016/07/xprototyping1_CROP-jpg-pagespeed-ic-JMdLXlgANs.jpg" medium="image"/><content:encoded>&lt;img src="http://localhost:2368/content/images/2016/07/xprototyping1_CROP-jpg-pagespeed-ic-JMdLXlgANs.jpg" alt="Intro to modern hardware prototyping"&gt;&lt;p&gt;This post is a brief overview of hardware (HW) prototyping. It is meant for individuals or teams that are starting their journey into the magical forest of HW prototyping. The topic is huge and it is impossible to cover all aspects of it in a blog post. Your situation, needs and requirements will also be different from ours. This is the post I wish I had read two years ago before I finished my undergrad degree in electrical engineering.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/x13458750_1787468258151166_2429666632631628299_o.png" alt="Intro to modern hardware prototyping"&gt;&lt;/p&gt;
+
+&lt;h2 id="tldr"&gt;tl;dr&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Learn the basic skills - circuit theory, how to solder, design PCBs and MCU programming&lt;/li&gt;
+&lt;li&gt;Set up a R&amp;amp;D lab&lt;/li&gt;
+&lt;li&gt;Get a prototype working first &amp;amp; iterate quickly&lt;/li&gt;
+&lt;li&gt;Avoid making circuit boards at home at all cost&lt;/li&gt;
+&lt;li&gt;If you speak open source you move faster&lt;/li&gt;
+&lt;li&gt;Using Arduino is like drawing with crayons. It is simple and fun but you won't be making no Mona Lisa&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id="firstthingsfirst"&gt;First things first&lt;/h2&gt;
+
+&lt;p&gt;Doing HW prototyping involves a large skill set. The knowledge you need can be pretty hard to come by if you don't know where to look. Most of the skills you will have to learn on you own. Diving head-first is the only way to overcome the initial hurdles.&lt;/p&gt;
+
+&lt;p&gt;To a total beginner I would recommend that you find a makerspace, fablab or something similar to help you with the absolute basics. In my experience you will find friendly people there who will gladly teach you how to breadboard components, solder circuits, program microcomputers, make simple enclosures etc. It is also important to get familiar with basic circuit theory. You're lucky there's plenty of &lt;a href="https://www.google.com/search?q=circuit+theory"&gt;material online!&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;When learning to solder start with through-hole components and then you can move to surface mount components when you are ready. Now we have a reflow oven in our lab so we don't have to solder as much, highly recommended if you dislike soldering.&lt;/p&gt;
+
+&lt;iframe width="420" height="315" src="https://www.youtube.com/embed/IpkkfK937mU" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Studying electrical engineering surely helped when I started to dabble with hardware, but to tell you the truth most of the stuff I learned I did by doing and not being afraid of asking questions when I got stuck. Here are resources that I found helpful when starting and use regularly even today:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;reddit - I have asked questions all over the place, &lt;a href="http://reddit.com/r/hwstartups"&gt;/r/hwstartups&lt;/a&gt;, &lt;a href="http://reddit.com/r/askelectronics"&gt;/r/askelectronics&lt;/a&gt;, &lt;a href="http://reddit.com/r/programming"&gt;/r/programming&lt;/a&gt;. More often than not the answers there are useful and people are nice.&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://eevblog.com/forum"&gt;eevblog.com/forum&lt;/a&gt; - Here's where the die-hard electronics nerds lay.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; Be skeptical! You need to be skeptical of everything you read online. Even if the material comes from people who are trying to help. If you are working with IC components always try to find the schematics first. We like to use &lt;a href="https://octopart.com/"&gt;Octopart&lt;/a&gt; for that.&lt;/p&gt;
+
+&lt;p&gt;Taking time to learn the basics is very important. Failing is a crucial step in the learning process, there's nothing bad about it. Fail often and fast and you will learn.&lt;/p&gt;
+
+&lt;h2 id="settingupardlab"&gt;Setting up a R&amp;amp;D lab&lt;/h2&gt;
+
+&lt;p&gt;After learning the basics you may be ready to move quickly. So that we could iterate as quickly as possible we decided we needed to set up a R&amp;amp;D lab. That meant getting the adequate electronics equipment with the budget that we had, which was around $2.5k at the time. Today the lab that we run consists of the following gear:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Bench power supply - Rigol DP832&lt;/li&gt;
+&lt;li&gt;Digital Oscilloscope - Rigol DS1054Z&lt;/li&gt;
+&lt;li&gt;Voltmeter - Extech 430&lt;/li&gt;
+&lt;li&gt;Soldering station - Hakko FX951&lt;/li&gt;
+&lt;li&gt;Reflow oven - Modified desktop oven with MCU inside for temperature regulation&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/station.jpg" alt="Intro to modern hardware prototyping"&gt;&lt;/p&gt;
+
+&lt;p&gt;Along with this we have a large selection of tweezers, other handy tools and components. All this is necessary as you dive deeper into HW prototyping and electronics.&lt;/p&gt;
+
+&lt;h2 id="hardwareprototypingistimeconsuming"&gt;Hardware prototyping is time consuming&lt;/h2&gt;
+
+&lt;p&gt;Developing hardware is notoriously hard, and for good reason. The steps involved are many and the learning curve is often steep. Understanding which steps you should outsource and which steps you can successfully do on your own is crucial if you want to succeed.&lt;/p&gt;
+
+&lt;p&gt;At first you should always find the shortest path to validate that your notion of an idea is achievable. That can mean buying individual modules of sites like &lt;a href="http://adafruit.com/"&gt;Adafruit&lt;/a&gt; and breadboarding them.&lt;/p&gt;
+
+&lt;p&gt;Only after you have validated that the idea makes sense on a breadboard you can start to think about designing your own PCB. &lt;strong&gt;Note:&lt;/strong&gt; Getting PCBs manufactured is the most time consuming step in the process of hardware prototyping phase. This you should be aware of and plan your steps so that you can use the time when the PCBs are getting manufactured for something useful.&lt;/p&gt;
+
+&lt;p&gt;The PCB design software that we have found most noob-friendly was CadSoft Eagle. Eagle comes in a free, open source version and the community surrounding it is very friendly to newcomers. Jeremy Blum has a wonderful series of tutorials on the subject available for free on youtube:&lt;/p&gt;
+
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/1AXwjZoyNno" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;p&gt;After you have designed and double-checked your PCB designs, you are ready to have them manufactured. &lt;strong&gt;DIY PCBs&lt;/strong&gt; can be nice if you know that you only want one copy, have a single sided PCB with through-hole components and want to &lt;strong&gt;actively waste your time&lt;/strong&gt;. We have wasted many, many hours on making our own PCBs at home and if you have the money I cannot overstate the importance of not doing so. &lt;/p&gt;
+
+&lt;p&gt;In the past we have used &lt;a href="http://seeedstudio.com/"&gt;Seed Studio&lt;/a&gt; to manufacture our PCBs and we have been very happy with them so far. &lt;a href="https://oshpark.com/"&gt;OSH Park&lt;/a&gt; is another manufacture of PCB that is popular with startups. To source parts we have used &lt;a href="http://mouser.com/"&gt;Mouser&lt;/a&gt; from day 1 and never had any problems with their service. They even offer free world-wide shipping for all orders over $100.&lt;/p&gt;
+
+&lt;h2 id="opensource"&gt;Open source&lt;/h2&gt;
+
+&lt;p&gt;One of the biggest, if not the biggest, advantage we had as a startup was our ability to speak open source. That, more than anything else, means that you understand where to look for code and resources that may help you. &lt;a href="https://github.com/"&gt;https://github.com/&lt;/a&gt; is a great resource for finding similar project to get inspiration for your project.&lt;/p&gt;
+
+&lt;p&gt;Just keep in mind that some of the code you borrow may have &lt;a href="https://tldrlegal.com/"&gt;licenses&lt;/a&gt; associated with it. If you do that, then you're good to go!&lt;/p&gt;
+
+&lt;h2 id="arduinoasatool"&gt;Arduino as a tool&lt;/h2&gt;
+
+&lt;p&gt;Using the &lt;a href="http://arduino.cc/"&gt;Arduino development platform&lt;/a&gt; is great for throwing together simple prototypes. It can get you a long way but recently we felt that it was holding us back. The IDE has a terrible design and more importantly the code runs slower than when you are in charge of the &lt;a href="http://elinux.org/Toolchains"&gt;toolchain&lt;/a&gt; all the way from source code to flashing the firmware. The more control over your hardware you have, the more precise your outcome will be.&lt;/p&gt;
+
+&lt;h2 id="goodluck"&gt;Good luck&lt;/h2&gt;
+
+&lt;p&gt;This was a quick post about the skills &amp;amp; resources you need to do hardware prototyping today. As with most things, getting good at HW prototyping takes patience and effort. Since we were able to get started, so can you.&lt;/p&gt;
+
+&lt;p&gt;If you have any questions or have something to add to this post please don't hesitate to ask below. Thank you for reading, good luck and have fun!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/xprototyping1--1-.jpg" alt="Intro to modern hardware prototyping"&gt;&lt;/p&gt;
+
+&lt;p&gt;This post is written by Olafur Bogason, CTO of &lt;a href="http://genkiinstruments.com"&gt;Genki Instruments&lt;/a&gt;. Genki is a design driven music technology startup from Reykjavik, Iceland. &lt;a href="http://genkiinstruments.com"&gt;genkiinstruments.com&lt;/a&gt;&lt;/p&gt;</content:encoded></item><item><title>Digitizing analog circuits containing op amps using Wave Digital Filters</title><description>&lt;p&gt;In this post I will share some work I have been doing on Wave Digital Filters, or WDFs for short. WDFs allows one to digitize analog reference circuits in a way that retains the underlying topology, has nice numerical properties, allows for breaking up of annoying delay-free loops when digitizing&lt;/p&gt;</description><link>http://localhost:2368/emulating-op-amp-circuits-using-wdf-theory/</link><guid isPermaLink="false">001fea29-370b-46d4-8c9b-b5943f5ee8c6</guid><category>WDF</category><category>DSP</category><category>Audio Signal Processing</category><dc:creator>Olafur Bogason</dc:creator><pubDate>Sun, 20 Mar 2016 18:41:16 GMT</pubDate><media:content url="http://localhost:2368/content/images/2016/07/xbanner-png-pagespeed-ic-vwvPZDSJ9k-1.png" medium="image"/><content:encoded>&lt;img src="http://localhost:2368/content/images/2016/07/xbanner-png-pagespeed-ic-vwvPZDSJ9k-1.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;&lt;p&gt;In this post I will share some work I have been doing on Wave Digital Filters, or WDFs for short. WDFs allows one to digitize analog reference circuits in a way that retains the underlying topology, has nice numerical properties, allows for breaking up of annoying delay-free loops when digitizing and has a very nice modular way of dealing with non-linearities. I will not explain the basic WDF theory here but if you are interested the &lt;a href="http://www.eit.lth.se/fileadmin/eit/courses/eit085f/Fettweis_Wave_Digital_Filters_Theory_and_Practice_IEEE_Proc_1986_-_This_is_a_real_challange.pdf"&gt;omnipotent paper&lt;/a&gt; on the subject written by Fettweis, the creator of WDF, or &lt;a href="https://ccrma.stanford.edu/~dtyeh/papers/wdftutorial.pdf"&gt;this tutorial on WDF&lt;/a&gt; should get you familiar with the topic.&lt;/p&gt;
+
+&lt;p&gt;Until very recently the WDF formalism has only worked on reference circuits that can be decomposed into parallel or series sub-circuits. Since many circuits in the wild have much more complicated topologies, the scope of reference circuits available for digital modelling using WDF has been very limited. Late last year there was a paper published called &lt;a href="https://www.ntnu.edu/documents/1001201110/1266017954/DAFx-15_submission_53.pdf/a559ce90-d16b-49a3-a267-5b877d7fe70b"&gt;Wave Digital Filter Adaptors for Arbitraty Topologies and Multiport Linear Elements&lt;/a&gt;. In it this issue was addressed by showing how arbitrary topologies may be handled within the WDF formalism. That was achieved by some cleaver usage of the ubiquitous &lt;a href="https://en.wikipedia.org/wiki/Modified_nodal_analysis"&gt;MNA method&lt;/a&gt;. In essence the method starts out with a reference circuit, extracts all series/parallel sub-circuits and uses the MNA method on the remaining components and connections. The trick is to allow active elements to clump up inside the non series/parallel adaptors, commonly known as R-type (rigid) adaptors and then figure out how the outcoming waves depend on the incoming ones (scattering matrix).&lt;/p&gt;
+
+&lt;p&gt;Now I will give two examples of how to use this new method on circuits previously unobtainable under the WDF formalism. To warm up I will start off by coming up with a WDF structure for the &lt;a href="https://en.wikipedia.org/wiki/Buffer_amplifier"&gt;buffer amplifier&lt;/a&gt;. &lt;/p&gt;
+
+&lt;h3 id="opampbuffercircuit"&gt;Op amp buffer circuit&lt;/h3&gt;
+
+&lt;p&gt;Following the steps developed in &lt;em&gt;Wave Digital Filter Adaptors for Arbitraty Topologies..&lt;/em&gt; I start out with a reference circuit, then approximate the op amp using a simple op amp model. I use a &lt;em&gt;infinitely&lt;/em&gt; large resistor between the input poles so that I can use it when adapting for the port facing the voltage source (the only non-linear element that needs adapting).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_buffer1.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_buffer2.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_buffer1_approx.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;&lt;/p&gt;
+
+&lt;p&gt;The next step is to form a so called replacement graph and find split components within it. The series/parallel adaptors that I find I remove from the graph and the remaining connections will fall inside the R-type adaptor we have to derive (it is impossible to further decompose the connections into more series/parallel connectors).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_buffer3.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;&lt;/p&gt;
+
+&lt;p&gt;Now that we have the two WDF adaptors (series S, and a rigid one R) found in the approximated reference circuit we can find how incoming/outgoing waves are reflected when they reach the R-type adaptor. We do that by finding the scattering matrix which is obtainable by using &lt;a href="http://www.swarthmore.edu/NatSci/echeeve1/Ref/mna/MNA5.html"&gt;Modified Nodal Analysis&lt;/a&gt;. I chose to adapt the scattering matrix to the input voltage source instead of using a resistive voltage source for simplicity's sake.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_buffer4.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;
+This is the underlying WDF structure.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_buffer5.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;
+Place a voltage source and resistor on all ports and then populate the MNA matrix.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_buffer6.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;
+Modified Nodal Analysis matrix which we can use to figure out the scattering matrix.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_buffer7.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;
+Here is the SPQR tree that indicates how the computation of the WDF structure can be done. In each iteration the waves travel from the lowest part of the tree all the way to the top and then back after the input signal has been injected.&lt;/p&gt;
+
+&lt;h4 id="softwareimplementation"&gt;Software implementation&lt;/h4&gt;
+
+&lt;p&gt;Next I implemented the WDF model in Matlab code along with a simple LTspice simulation. Then I plotted the frequency response..&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_volt_follower.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;&lt;/p&gt;
+
+&lt;p&gt;As expected the buffer circuit holds the input at unity for all frequencies and the frequency response is visually not different from the &lt;em&gt;ground truth&lt;/em&gt; LTspice simulation.&lt;/p&gt;
+
+&lt;h3 id="sallenkeylowpassfilter"&gt;Sallen-Key low pass filter&lt;/h3&gt;
+
+&lt;p&gt;Next I move on to a bit more interesting reference circuit, the &lt;a href="https://en.wikipedia.org/wiki/Sallen%E2%80%93Key_topology#Application:_Low-pass_filter"&gt;lowpass Sallen-Key filter&lt;/a&gt;. The steps are exactly the same as above.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_sk1.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;
+We start out with a reference circuit..&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_sk2.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;
+Approximate the op amp like before..&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_sk_spqr.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;
+Generate the reference graph and find split components (again one series and one R-type adaptor)...&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_sk5.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_sk4.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_buffer6-1.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;
+Populate the MNA matrix and write out the SPQR tree.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/wdf_sk3.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;&lt;/p&gt;
+
+&lt;h4 id="softwareimplementation"&gt;Software implementation&lt;/h4&gt;
+
+&lt;p&gt;Again I coded up the WDF strucute and compared its frequency response with frequency response coming from LTspice. &lt;br&gt;
+&lt;img src="http://localhost:2368/content/images/2016/07/wdf_sallen_key_lp.png" alt="Digitizing analog circuits containing op amps using Wave Digital Filters"&gt;&lt;/p&gt;
+
+&lt;h2 id="demos"&gt;Demos&lt;/h2&gt;
+
+&lt;p&gt;Just to give a simple demo I put a funk drum beat and put it through the Sallen-Key lowpass filter WDF structure with a cutoff frequency of ~1 kHz.  &lt;/p&gt;
+
+&lt;iframe width="100%" height="450" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/207645541&amp;amp;auto_play=false&amp;amp;hide_related=false&amp;amp;show_comments=true&amp;amp;show_user=true&amp;amp;show_reposts=false&amp;amp;visual=true"&gt;&lt;/iframe&gt;
+
+&lt;h3 id="finalthoughts"&gt;Final thoughts&lt;/h3&gt;
+
+&lt;p&gt;There are still many circuits that are impossible to model using state-of-the-art WDF theory. An example are circuits that have global feedback (such as the MS-20 filter). Fundamental research in the field is active at the moment and hopefully within a few years those circuits will also be able to model using WDFs.&lt;/p&gt;
+
+&lt;p&gt;A big shout out goes to &lt;a href="https://ccrma.stanford.edu/~kwerner/"&gt;Kurt James Werner&lt;/a&gt; for help and support down the WDF rabbit.&lt;/p&gt;
+
+&lt;p&gt;Thank you for reading through and if you have any thoughts please share them in the comment section below.&lt;/p&gt;</content:encoded></item><item><title>Fundamental frequency estimation and supervised learning</title><description>&lt;p&gt;&lt;em&gt;This post is a report on a final project I did in a music technology graduate seminar, &lt;a href="http://www.music.mcgill.ca/~depalle/MUMT605.html"&gt;MUMT-605&lt;/a&gt;, offered at McGill in the fall of 2015.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id="fundamentalfrequencyestimation"&gt;Fundamental frequency estimation&lt;/h2&gt;
+
+&lt;p&gt;Fundamental frequency (&lt;strong&gt;f0&lt;/strong&gt;) estimation (sometimes also called pitch detection, see Appendix A) has been an &lt;a href="http://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&amp;amp;queryText=Fundamental%20frequency%20estimation"&gt;active topic of research&lt;/a&gt; within the&lt;/p&gt;</description><link>http://localhost:2368/fundamental-frequency-estimation-and-machine-learning/</link><guid isPermaLink="false">cd69b30b-582a-493f-8719-8cd9829add53</guid><category>python</category><category>Audio Signal Processing</category><category>Machine Learning</category><category>McGill</category><dc:creator>Olafur Bogason</dc:creator><pubDate>Fri, 18 Dec 2015 10:53:44 GMT</pubDate><media:content url="http://localhost:2368/content/images/2016/07/xbanner-png-pagespeed-ic-CQyvJM1PgS.png" medium="image"/><content:encoded>&lt;img src="http://localhost:2368/content/images/2016/07/xbanner-png-pagespeed-ic-CQyvJM1PgS.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;p&gt;&lt;em&gt;This post is a report on a final project I did in a music technology graduate seminar, &lt;a href="http://www.music.mcgill.ca/~depalle/MUMT605.html"&gt;MUMT-605&lt;/a&gt;, offered at McGill in the fall of 2015.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id="fundamentalfrequencyestimation"&gt;Fundamental frequency estimation&lt;/h2&gt;
+
+&lt;p&gt;Fundamental frequency (&lt;strong&gt;f0&lt;/strong&gt;) estimation (sometimes also called pitch detection, see Appendix A) has been an &lt;a href="http://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&amp;amp;queryText=Fundamental%20frequency%20estimation"&gt;active topic of research&lt;/a&gt; within the field of audio signal processing for many years. Currently there exist literally hundreds of estimation methods that most do fairly well when the sound source is monophonic and noiseless but tend to differ greatly in accuracy when applied in less ideal situations [1, 4].&lt;/p&gt;
+
+&lt;p&gt;Given adequate data and labels &lt;a href="https://en.wikipedia.org/wiki/Supervised_learning"&gt;supervised learning&lt;/a&gt; is a very interesting method to explore in the context of fundamental frequency estimation as it has the potential to combine the information gained from individual methods and use it to come up with a more precise estimate. It could learn which methods to &lt;em&gt;trust&lt;/em&gt; under certain circumstances and which not to and then use the model that has been learned when it is predicting output frequencies for inputs that it hasn't seen before.&lt;/p&gt;
+
+&lt;p&gt;In this post I will  discuss five f0 methods and their individual strengths and weaknesses. From there on I briefly introduce supervised machine learning and mention how concepts therein could be used to augment the performance of current estimation methods. I conclude with a case study.&lt;/p&gt;
+
+&lt;h2 id="estimationmethods"&gt;Estimation methods&lt;/h2&gt;
+
+&lt;p&gt;Fundamental frequency estimators can be split roughly into two categories: time domain based estimators (looking at the incoming waveform) and frequency domain based estimators (looking at the frequency spectrum) or sometimes the methods used are a &lt;a href="https://en.wikipedia.org/wiki/Pitch_detection_algorithm#Spectral.2Ftemporal_approaches"&gt;combination of methods&lt;/a&gt; from both categories. Some authors also mention yet another category, &lt;em&gt;probabilistic methods&lt;/em&gt; [1,5,11], but they are, not surprisingly, always a member of either or both time- or frequency domain categories. &lt;/p&gt;
+
+&lt;p&gt;Methods in both categories have their advantages and disadvantages. The time domain based estimators are exceedingly simple to understand and implement and are computationally cheap [1]. They however lack robustness when noise or polyphonic sounds are present in the input signal. The more up to date time domain estimators have been augmented to bring performance closer to human assessment of pitch [6,7,8]. On the other hand frequency domain methods tend to show more resilience to noise and some can even be used for polyphonic fundamental frequency estimation [8,9]. Frequency domain methods tend to be mathematically more involved and also computationally heavier than time-domain methods.&lt;/p&gt;
+
+&lt;p&gt;It is outside the scope of this report to give a thorough explanation of all fundamental frequency estimators. I will limit myself to a brief summary of five well known fundamental frequency estimation methods. Two of them, counting zero crossings and autocorrelation belong to the time domain category and the remaining methods belong to the frequency-domain category.&lt;/p&gt;
+
+&lt;h4 id="timedomainbasedestimators"&gt;Time domain based estimators&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;Zero-crossing rate (ZCR)&lt;/strong&gt; - Using the fact that fundamental frequency is the reciprocal of the longest repeating period in a signal we can count the times a signal crosses the time axis. The zero crossing patterns that emerge can then be used to estimate f0, that is we can count rising- or falling edge crossings and use the rate at which they occur to estimate the fundamental frequency.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/ZCR.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;p&gt;ZCR is computationally inexpensive and can be implemented in O(N) &lt;a href="https://en.wikipedia.org/wiki/Big_O_notation"&gt;time complexity&lt;/a&gt;. It tends to do poorly when the signal has additional high-frequency components (as many real world signals do) because then there can exist multiple zero crossings per cycle. The effects of the high-frequency components can be mitigated by pre-processing the signal before applying the algorithm. This method is thus &lt;strong&gt;very sensitive&lt;/strong&gt; to noise and fluctuations in instantaneous frequency [1].&lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/8a259df0bc975f605db7.js"&gt;&lt;/script&gt;
+
+&lt;p&gt;&lt;strong&gt;Autocorrelation (AC)&lt;/strong&gt; is a function of of how &lt;em&gt;similar&lt;/em&gt; a signal is to a delayed version of itself [11]. Figuring out the position of the first peak in the AC (the shortest time lag where the signal repeats) can be used to estimate the period of the incoming wave.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/AC.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;p&gt;AC can be &lt;a href="https://en.wikipedia.org/wiki/Autocorrelation#Efficient_computation"&gt;computed at O(N log(N))&lt;/a&gt; and is a great method for finding the fundamental even when the incoming signal has strong harmonics, a missing fundamental or contains noise [6]. One drawback of the AC method is that it may erroneously choose a peak relating to a higher-order partial instead of the fundamental frequency. A method called YIN [7] was developed in 2002 to enhance the performance of AC and is now more commonly used than AC.&lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/dfdde2b142dfaa8b9224.js"&gt;&lt;/script&gt;
+
+&lt;h4 id="frequencydomainbasedestimators"&gt;Frequency domain based estimators&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;Finding global peak in FFT (FFT)&lt;/strong&gt;: FFT is applied to a windowed input signal and the frequency bin containing the most energy is used to find the peak frequency. Some sort of of &lt;a href="https://en.wikipedia.org/wiki/Linear_interpolation"&gt;interpolation&lt;/a&gt; can also be used to get more precise result. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/fft.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;p&gt;FFT can yield poor results when the fundamental frequency does not fall in a frequency bin which has the highest energy or is &lt;a href="https://en.wikipedia.org/wiki/Missing_fundamental"&gt;not present at all&lt;/a&gt;. &lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/979d86686748cb6bace7.js"&gt;&lt;/script&gt;
+
+&lt;p&gt;&lt;strong&gt;Harmonic product spectrum (HPS)&lt;/strong&gt;: A method based around the fact that many real world signals have frequency harmonics (the sinusoids above the fundamental) located at some real value multiple of the fundamental frequency. The frequency spectrum is found and under-sampled at integer values. These spectrums are then multiplied together. The frequency bin containing the peak of the multiplied signal is estimated to be the fundamental frequency, which makes sense since higher frequency harmonics are often in linear relationship with the fundamental frequency. For a better explanation please refer to &lt;a href="http://cnx.org/contents/i5AAkZCP@2/Pitch-Detection-Algorithms"&gt;[6]&lt;/a&gt;. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/hps.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;p&gt;HPS works well for signals where there harmonics are in some linear relationship with the fundamental and can be implemented to perform in O(N log(N)) time. One shortcoming of this approach is that we have to know before hand approximately how many harmonic partials are in the input signal (how many times we should undersample the spectrum). If the signal contains a lot of low frequency noise, that can also distort the estimation.&lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/24c77d532655b28301a5.js"&gt;&lt;/script&gt;
+
+&lt;p&gt;&lt;strong&gt;Cepstrum (CEPS)&lt;/strong&gt;: First the complex &lt;a href="https://en.wikipedia.org/wiki/Cepstrum"&gt;cepstrum&lt;/a&gt; is calculated and then the sample corresponding to a peak within a sub-interval which is chosen so that it &lt;em&gt;should&lt;/em&gt; contain the fundamental frequency. The location of the peak within the interval is then used to estimate the fundamental frequency. The clarinet for example has a frequency range of approx. 125Hz - 2K so at a sampling frequency of 44.1kHz we should search for the peak within the interval [22, 353] samples.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/cepstrum.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;p&gt;I found that CEPS works very well when the fundamental is low (440 Hz or lower in the case of the clarinet) but typically underestimates the fundamental when the incoming signal has &lt;em&gt;higher&lt;/em&gt; frequency (800 Hz or higher in the case of the clarinet) [2].&lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/4844b58a9c4594102c2d.js"&gt;&lt;/script&gt;
+
+&lt;h5 id="preprocessingtheinputsignal"&gt;Preprocessing the input signal&lt;/h5&gt;
+
+&lt;p&gt;Most of the algorithms above will benefit from some kind of preprocessing of input signal. I found it to be beneficial to bandpass the input signals at cutoff-frequencies lower/higher than the  highest/lowest note I wanted to be able to estimate. This process got rid of DC components and high-frequency noise which some methods are very sensitive to (i.e. ZCR). The only method that may suffer from bandpass filtering is &lt;strong&gt;HPS&lt;/strong&gt; as it bases its estimation on high frequency harmonics. Other form of preprocessing include other kinds of filtering or smoothing of the signal.&lt;/p&gt;
+
+&lt;h3 id="supervisedlearning"&gt;Supervised learning&lt;/h3&gt;
+
+&lt;p&gt;In short &lt;a href="https://en.wikipedia.org/wiki/Supervised_learning"&gt;supervised learning&lt;/a&gt; can be described as following: we provide the algorithm with some training data in the form of a feature vector (input data) and target vector (labelled output to given input data). The algorithm then "analyses the training data and produces an inferred function, which can be used for mapping new examples." [10] The mapping can be discrete and then the algorithm is called &lt;em&gt;classification&lt;/em&gt;, or continuous, as in the case of frequency, and then the algorithm is referred to as &lt;em&gt;regression&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h3 id="casestudy"&gt;Case study&lt;/h3&gt;
+
+&lt;p&gt;As an example of applying supervised learning to a setting within fundamental frequency estimation I decided to try to estimate the fundamental of monophonic signals from musical instruments.&lt;/p&gt;
+
+&lt;p&gt;The data for the case study I got from &lt;a href="http://theremin.music.uiowa.edu/MIS.html"&gt;University of Iowa, Musical Instrument Samples webpage&lt;/a&gt;. The site contains a database of recordings of numerous musical instruments. The recordings I used contained single notes of the &lt;a href="https://en.wikipedia.org/wiki/Chromatic_scale"&gt;chromatic scale&lt;/a&gt; played on various musical instruments. Conveniently the recordings have a &lt;em&gt;ground truth&lt;/em&gt; (or so we will assume) frequency in their filenames.&lt;/p&gt;
+
+&lt;p&gt;I am not an expert on machine learning and so the underlying algorithms I will assume to be &lt;em&gt;black boxes&lt;/em&gt;. After searching around I experimented with two regression methods from the &lt;a href="http://scikit-learn.org/stable/index.html"&gt;scikit-learn&lt;/a&gt; [3] python package. The first approach I tried was a &lt;a href="https://en.wikipedia.org/wiki/Bayesian_linear_regression"&gt;Bayesian linear regression&lt;/a&gt; (&lt;strong&gt;BLR&lt;/strong&gt;) and the second one was a &lt;a href="https://en.wikipedia.org/wiki/Support_vector_machine"&gt;support vector machine&lt;/a&gt; along with a &lt;a href="https://en.wikipedia.org/wiki/Radial_basis_function_kernel"&gt;Radial basis function kernel&lt;/a&gt; (&lt;strong&gt;SVR&lt;/strong&gt;). I chose these two because they offer example of linear- (BLR) and non-linear (SVR) regression and I wanted to see how the two approaches performed.&lt;/p&gt;
+
+&lt;p&gt;I implemented the algorithms explained earlier in python, building on the code snippet found &lt;a href="https://gist.github.com/endolith/255291"&gt;here&lt;/a&gt;. I then iterated through the various signals using a window size of 2048 samples, applying the algorithms on these samples and then saving the estimated frequencies in a feature vector as well as the target frequency which I extracted from the filenames.&lt;/p&gt;
+
+&lt;p&gt;Using the scikit-learn package I trained both of the regression models with about 5/6 of the data I had gathered. I then used the remaining data to predict the fundamental frequency on a couple of individual instruments and also all of them together. Finally I calculated the RMS value for each method with respect to the &lt;em&gt;ground truth&lt;/em&gt; frequency given in the filenames.&lt;/p&gt;
+
+&lt;h4 id="rmsbargraphs"&gt;RMS bar graphs&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/all.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/TenorTrombone-ff-stereo-4.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/Xylophone-hardrubber-ff-stereo-2.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/Violin-arco-ff-sulG-stereo-2.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/EbClarinet-ff-stereo-4.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/bells-plastic-ff-stereo-1.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;h5 id="nopreprocessing"&gt;No preprocessing&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/bells-plastic-ff-stereo-no_prep.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;h4 id="resultsandpossibleimprovements"&gt;Results and possible improvements&lt;/h4&gt;
+
+&lt;p&gt;It should be noted that the quality of the methods are all dependent on how well the frequency of the original signal was labelled. Often, many of the algorithms I implemented agreed on a frequency within ~2 Hz of relative error whereas the target frequency was way off. Since there exist no silver bullet estimation method for f0 estimation, generating accurate labels could be bothersome and difficult (i.e. doing it by hand) which is the biggest drawback for the supervised learning method. Gross error might also give a more meaningful estimate of relative error than RMS.&lt;/p&gt;
+
+&lt;p&gt;A short glance over the bar graphs suggests that the BLR or SVR methods perform with the least RMS error for all methods except the "bells.plastic.ff.stereo" group of signals. The advantages and disadvantages of the estimation methods are also visible when comparing the graphs. For the signal groups which have most of their energy in the fundamental frequency such as "bells.plastic.ff.stereo" and "Xylophone.hardrubber.ff.stereo" which can be though of as simply exponentially decaying sinusoids (see "bells.plastic.ff.A5.stereo.wav" wavefrom graph).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/bells.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;p&gt;The group of signals where the time-domain methods tend to do well all have waveform that have very clear zero-crossings, such as is the case in the "TenorTrombone.ff.A3.stereo.wav" waveform. It came as no surprise that when a group of signals that don't have complex spectra but most of the energy contained in the fundamental frequency both HPS and CEPS methods perform much worse than for signals with complex frequency spectra. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2016/07/trombone.png" alt="Fundamental frequency estimation and supervised learning"&gt;&lt;/p&gt;
+
+&lt;p&gt;The regression methods I used are only two of a myriad of methods that exist within the vast field of supervised learning. It would be very interesting to do more research on the methods that exists such as &lt;a href="https://en.wikipedia.org/wiki/Random_forest"&gt;random forest&lt;/a&gt;. It would also be interesting to experiment with other feature spaces, not just the output of the f0 estimators. An example could be the number of zero crossings per M samples.&lt;/p&gt;
+
+&lt;h2 id="references"&gt;References&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;[1] D. Gerhard. Pitch Extraction and Fundamental Frequency: History and Current Techniques, technical report, Dept. of Computer Science, University of Regina, 2003.
+[2] G. Middleton. Pitch Detection Algorithms, online resource from Connexions. Downloaded from [http://cnx.org/contents/i5AAkZCP@2/Pitch-Detection-Algorithms](http://cnx.org/contents/i5AAkZCP@2/Pitch-Detection-Algorithms) on December 10th 2015.
+[3] Scikit-learn: Machine Learning in Python, Pedregosa et al., JMLR 12, pp. 2825-2830, 2011.
+[4] P. Cuadra. Pitch Detection Methods Review. Downloaded from https://ccrma.stanford.edu/~pdelac/154/m154paper.htm on December 11th 2015.
+[5] S. Brown. General Acoustics - Frequency Range of Vocals and Musical Instruments. Downloaded from http://www.listenhear.co.uk/general_acoustics.htm on December 16th 2015.
+[6] Hajime Sano and B. Keith Jenkins. A neural network model for pitch perception. *Computer Music Journal*, 13(3):41-48, Fall 1989
+[7] A. de Cheveigné and H. Kawahara. YIN, a fundamental frequency estimator for speech and music. *The Journal of the Acoustical Society of America*, 111:1917, 2002. 
+[8] S. Kraft, U. Zölzer. Polyphonic Pitch Detection by Iterative Analysis of the Autocorrelation Function. *DAFx-14, Erlangen, Germany, September 1-5, 2014*.
+[9] R. Toy, R. Kailath. ESPRIT - Estimation of Signal Parameters Via Rotational Invariance Techniques. *IEEE Transactions of Acoustics, Speech and Signal Processing. Vol. 37, No. 7, July 1989*.
+[10] Wikipedia contributors. "Supervised learning". Wikipedia, The Free Encyclopedia. Wikipedia, The Free Encyclopedia, 28 Oct. 2015. Web. 17 Dec. 2015. 
+[11] A. Röbel. Fundamental frequency estimation. *Summer 2006 lecture on analysis,
+modeling and transformation of audio signal*. Downloaded from http://recherche.ircam.fr/anasyn/roebel/amt_audiosignale/VL5.pdf on December 13th 2015.&lt;/code&gt;&lt;/p&gt;
+
+&lt;h4 id="appendixafrequencyandpitcharenotthesamething"&gt;Appendix A: Frequency and pitch are not the same thing&lt;/h4&gt;
+
+&lt;p&gt;In fundamental frequency estimation literature there is a common misconception that frequency is the same as pitch. Frequency is defined as the reciprocal of a period and has nothing to do with human perception, which pitch however does. Pitch is how we humans perceive frequency psychoacoustically.&lt;/p&gt;</content:encoded></item><item><title>A Knight's Tour</title><description>&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2015/10/til_mogu-1.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;Another interesting problem relating to classical search in AI is the Knight's Tour.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;A knight's tour is a sequence of moves of a knight on a chessboard such that the knight visits every square only once. If the knight ends on a square that is one knight's move from the&lt;/p&gt;&lt;/blockquote&gt;</description><link>http://localhost:2368/knights_tour/</link><guid isPermaLink="false">a294a956-1295-4fe5-ba98-6832e1636e31</guid><dc:creator>Olafur Bogason</dc:creator><pubDate>Fri, 23 Oct 2015 15:26:04 GMT</pubDate><content:encoded>&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2015/10/til_mogu-1.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;Another interesting problem relating to classical search in AI is the Knight's Tour.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;A knight's tour is a sequence of moves of a knight on a chessboard such that the knight visits every square only once. If the knight ends on a square that is one knight's move from the beginning square (so that it could tour the board again immediately, following the same path), the tour is closed, otherwise it is open. - &lt;a href="https://en.wikipedia.org/wiki/Knight's_tour"&gt;Wikipedia&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Knights-Tour-Animation.gif" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;I implemented a solution that tries to perform a open path tour and returns a list of squares the knight has to travel to from begin to end. I found no need to use the simpleai library this time. Instead used a &lt;a href="https://en.wikipedia.org/wiki/Best-first_search"&gt;greedy search&lt;/a&gt; that will always take the action that results in a state with the fewest actions possible, otherwise known as the &lt;a href="https://en.wikipedia.org/wiki/Knight's_tour#Warnsdorf.27s_rule"&gt;Warnsdorf's rule&lt;/a&gt;. If it doesn't find a path in the first case it will simply return an error for the given N and start point.&lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/4a69e66687b8d5ec994d.js"&gt;&lt;/script&gt;</content:encoded></item><item><title>The problem with N queens</title><description>&lt;p&gt;I'm currently taking an &lt;a href="http://www.cim.mcgill.ca/~jer/courses/ai/"&gt;introductory course in AI&lt;/a&gt; at McGill. In reality the course is not really an introductory course as it covers a broad range of theory and is extremely demanding (as in bloody hard). That being said I feel like I'm getting a good overview of the general&lt;/p&gt;</description><link>http://localhost:2368/n_queens_problem/</link><guid isPermaLink="false">69454ea5-24c3-4d50-ab70-240a77eeffe9</guid><category>python</category><category>simpleai</category><dc:creator>Olafur Bogason</dc:creator><pubDate>Wed, 21 Oct 2015 16:16:58 GMT</pubDate><content:encoded>&lt;p&gt;I'm currently taking an &lt;a href="http://www.cim.mcgill.ca/~jer/courses/ai/"&gt;introductory course in AI&lt;/a&gt; at McGill. In reality the course is not really an introductory course as it covers a broad range of theory and is extremely demanding (as in bloody hard). That being said I feel like I'm getting a good overview of the general landscape of AI, which is awesome.&lt;/p&gt;
+
+&lt;p&gt;The course textbook we're using is &lt;a href="http://aima.cs.berkeley.edu/"&gt;AI: A Modern Approach&lt;/a&gt;. In a chapter about classical search the authors talk about a problem called &lt;a href="https://en.wikipedia.org/wiki/Eight_queens_puzzle"&gt;the 8-Queens problem&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Chess_piece_-_White_queen.jpg/279px-Chess_piece_-_White_queen.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The eight queens puzzle is the problem of placing eight chess queens on an 8×8 chessboard so that no two queens threaten each other. - &lt;a href="https://en.wikipedia.org/wiki/Eight_queens_puzzle"&gt;Wikipedia&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I must admit that I'm not a big chess player but I did find this to be an interesting problem in its own right. Below are a couple of implementations for solving the 8-Queens problem using the &lt;a href="https://github.com/simpleai-team/simpleai"&gt;simpleai&lt;/a&gt; library and its built in &lt;a href="https://en.wikipedia.org/wiki/A*_search_algorithm"&gt;A* search&lt;/a&gt; algorithm.&lt;/p&gt;
+
+&lt;p&gt;One short remark before we continue: There's really nothing that says that we have to limit ourselves to a 8x8 board instead of a board of maybe 9x9 or 99x99 squares. So from now on I will talk about the N queens problem on a NxN board instead. Now let's look at implementations...&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id="onequeenatatime"&gt;One queen at a time&lt;/h3&gt;
+
+&lt;p&gt;The first implementation is the most simple and straight forward I could come up with. The algorithm goes as follows: You start out with a blank board represented by a NxN array in python which we call our initial state. The set of actions we can do to generate a new state is to place a queen at some point (i, j) on the board where 0 &amp;lt;= i, j &amp;lt; N. You then run A* search on the initial state.&lt;/p&gt;
+
+&lt;p&gt;At each state the algorithm will place one queen on the board and makes sure that it isn't being attacked. We keep on placing new queens on the board until the board has been filled with N queens where none of them are under attack. The heuristic I'm using is very simple: calculate how many queens we have left to place on the board at the given state, pretty simple. &lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/becb9eb4d8b00d89e664.js"&gt;&lt;/script&gt;
+
+&lt;p&gt;At each time the A* search generates a new state it tries out N^2 different placements of queens, in the worst case. This approach is very slow and we aren't taking advantage of the structure of the problem at all&lt;/p&gt;
+
+&lt;h3 id="allqueensonboardandswap"&gt;All queens on board and swap&lt;/h3&gt;
+
+&lt;p&gt;Well what about instead of starting out with an initial state that corresponds to an empty NxN board, we place N queens randomly on the board so that we have one queen in each row of the board? We would start out in a state that potentially is not valid since there is a good chance that we will have some queens attacking each other. That's just fine because we only need to swap queens on the board until we have a legal state with no queen under attack.&lt;/p&gt;
+
+&lt;p&gt;To generate new states we swap two queens so that the resulting state will have fewer queens under attack than the prior state. The heuristic we use is the sum of all attacks (i.e. if a queen is under attack that would result in a +2 added to the sum etc.).&lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/5e80c13e21dbea75182e.js"&gt;&lt;/script&gt;
+
+&lt;p&gt;This approach naturally sounds like a  better idea than placing one queen at a time, but I would argue that we haven't started to take any real advantage of the structure of the problem. Let's go and do something about that!&lt;/p&gt;
+
+&lt;h3 id="onerowatatime"&gt;One row at a time&lt;/h3&gt;
+
+&lt;p&gt;We know that each row and column must have exactly one queen present. That essentially means that we don't really need to think about every single square on the board when placing a queen. Instead we can add a queen at the &lt;em&gt;i-th&lt;/em&gt; index in a row, that is not present in the board. This brings our set of actions we can make at each state down from N^2 to N (in the worst case). That makes a huge difference in running time as we will see.&lt;/p&gt;
+
+&lt;p&gt;This implementation works by starting out with an empty board, expressed as an empty tuple in Python. When a new state is generated we append a row containing exactly one queen, to the previous state. We can think of this as adding a queen to the row that is nearest to the &lt;em&gt;top&lt;/em&gt; of the NxN board which contains no queen yet. The heuristics is the same we used for the previous implementation. We continue adding queens to the board, one row at a time, until the board is full and no queen is under attack.&lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/212acb3baded09107793.js"&gt;&lt;/script&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id="timecomparisonofimplementations"&gt;Time comparison of implementations&lt;/h3&gt;
+
+&lt;iframe width="600" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~horigome/97.embed"&gt;&lt;/iframe&gt;
+
+&lt;iframe width="600" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~horigome/83.embed"&gt;&lt;/iframe&gt;
+
+&lt;iframe width="600" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~horigome/44.embed"&gt;&lt;/iframe&gt;
+
+&lt;p&gt;For each N I sampled 4 turns and took the average of their runtimes.&lt;/p&gt;
+
+&lt;p&gt;It's very difficult to say anything solid about this time comparison due to the way in which possible actions are randomized at each step of the algorithm. I can however say that by essentially adding &lt;em&gt;knowledge&lt;/em&gt; to our implementation (by exploiting the problem structure) we were able to make the search go significantly faster than the most naive approach (compare NQueensSquare to NQueensRow). &lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2015/10/queens-1.png" alt=""&gt;
+In this post we went through three different solution implementation for the N-Queen problem and saw how important representing a problem in a smart way is when running A* search. If you're interested in seeing more code, go get it at &lt;a href="https://github.com/multivac61/nqueens"&gt;my Github page&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I'm sure there must be faster ways to solve the N Queen problem and my implementations were merely meant as an exercise in thinking about problem representation and then coding it up in Python. If you have implemented or know of a faster way to do this or have anything to add just comment below.&lt;/p&gt;</content:encoded></item><item><title>Note to self.self: List comprehensions in Python 2.x leak!</title><description>&lt;p&gt;After considerable amount of debugging on some code I've been writing in Python 2.x I finally found the bug. This time it didn't arise because I was sloppy, as it so often does, but because of faulty behaviour intrinsic to the language design of Python 2.x itself.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://ourcastlesstrength.files.wordpress.com/2014/09/18-dear-liza.png" alt="Leaking bucket"&gt;&lt;/p&gt;
+
+&lt;p&gt;A&lt;/p&gt;</description><link>http://localhost:2368/note-to-self/</link><guid isPermaLink="false">7dd3f086-2f12-48dd-945c-47baf642b483</guid><category>python</category><category>note to self</category><dc:creator>Olafur Bogason</dc:creator><pubDate>Sun, 18 Oct 2015 19:20:32 GMT</pubDate><content:encoded>&lt;p&gt;After considerable amount of debugging on some code I've been writing in Python 2.x I finally found the bug. This time it didn't arise because I was sloppy, as it so often does, but because of faulty behaviour intrinsic to the language design of Python 2.x itself.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://ourcastlesstrength.files.wordpress.com/2014/09/18-dear-liza.png" alt="Leaking bucket"&gt;&lt;/p&gt;
+
+&lt;p&gt;A simple example shows the bug...  &lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/6e02f88b3a7816975d98.js"&gt;&lt;/script&gt;
+
+&lt;p&gt;It's no surprise that &lt;a href="http://stackoverflow.com/questions/4575698/python-list-comprehension-overriding-value"&gt;others&lt;/a&gt; have encountered this bug/feature before and it has supposedly been fixed in Python 3.x. &lt;/p&gt;
+
+&lt;p&gt;Maybe this is a good example of why I should be switching over to Python 3.x soon... ish...&lt;/p&gt;</content:encoded></item><item><title>Sorting algorithms in Python</title><description>&lt;p&gt;Recently I've been doing some coding in Python but I felt like I didn't really understand what was going on. So as a way to better understand python's syntax and semantics I implemented a couple of the better known sorting algorithms - for fun and the greater good! This post&lt;/p&gt;</description><link>http://localhost:2368/sorting-algorithms-in-python/</link><guid isPermaLink="false">b74b8743-bc49-4029-9228-3460ba073deb</guid><category>python</category><category>algorithms</category><dc:creator>Olafur Bogason</dc:creator><pubDate>Sat, 03 Oct 2015 15:11:09 GMT</pubDate><content:encoded>&lt;p&gt;Recently I've been doing some coding in Python but I felt like I didn't really understand what was going on. So as a way to better understand python's syntax and semantics I implemented a couple of the better known sorting algorithms - for fun and the greater good! This post showcases the code I wrote and talks about the hurdles I encountered while implementing the algorithms. This post is only meant to document my learning process of Python implementations and not really meant for learning about the mathematics behind the space- and time complexities of the different sort algorithms as I had already done that in my EE undergrad. All comments about implementation issues, bugs or pythonic styling are more than welcome!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/200px-Python-logo-notext.svg.png" alt=""&gt;&lt;/p&gt;
+
+&lt;h2 id="thesimplersorts"&gt;The simpler sorts&lt;/h2&gt;
+
+&lt;p&gt;As a start I decided to go with the simplest looking sorts, insertion- and selection sort. They are both O(n^2) in time complexity and thus rarely ever used on large datasets. Their implementation is however straight forward. It is noteworthy to point out that I wanted each function to return a &lt;strong&gt;new list of numbers&lt;/strong&gt; and that the functions shouldn't mutate the list passed in at all.&lt;/p&gt;
+
+&lt;h4 id="insertionsort"&gt;Insertion sort&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Insertion-sort-example-300px.gif" alt=""&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Insertion sort is a simple sorting algorithm that builds the final sorted array (or list) one item at a time. It is much less efficient on large lists than more advanced algorithms such as quicksort, heapsort, or merge sort. - 
+  &lt;a href="https://en.wikipedia.org/wiki/insertion_sort" title="Wikipedia: Insertion sort"&gt;Insertion sort&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The search iterates through the unsorted array. Each time it passes on of its elements to an inner function insert&lt;em&gt;_&lt;/em&gt;item, which takes a list and element and inserts the element in the right place (as dictated by the passed in function sort&lt;em&gt;_&lt;/em&gt;by).&lt;/p&gt;
+
+&lt;p&gt;The sort&lt;em&gt;_&lt;/em&gt;by function takes as a default an &lt;a href="https://pythonconquerstheuniverse.wordpress.com/2011/08/29/lambda_tutorial/"&gt;lambda function&lt;/a&gt; &lt;code&gt;(lambda a, b: a &amp;lt; b)&lt;/code&gt;. To those of you who haven't heard about the built-in lambda functions I encourage you to check them out. They can come in handy to build up simple functions in a lucid manner, when using def is simply too much.&lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/844d95f5c8b4ef6e3938.js"&gt;&lt;/script&gt;
+
+&lt;h3 id="selectionsort"&gt;Selection sort&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The algorithm [selection sort] divides the input list into two parts: the sublist of items already sorted, which is built up from left to right at the front (left) of the list, and the sublist of items remaining to be sorted that occupy the rest of the list. - &lt;a href="https://en.wikipedia.org/wiki/selection_sort" title="Wikipedia: Selection sort"&gt;selection sort&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;My implementation  starts off with the passed-in list and copies all elements from the list into a new place in memory (very important so that we don't mutate the passed in list) and assigns that object to the variable initial&lt;em&gt;_&lt;/em&gt;list. Then we iterate through that list and at each passing we find the "lowest" element as dictated by the sort&lt;em&gt;_&lt;/em&gt;by function as before. We then append that element on the back of our sorted&lt;em&gt;_&lt;/em&gt;list object and voilá! after passing through the outer loop once we have sorted the list passed in. We then return.&lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/60a7a625dba405ce8976.js"&gt;&lt;/script&gt;
+
+&lt;hr&gt;
+
+&lt;h2 id="themoreefficientsorts"&gt;The more efficient sorts&lt;/h2&gt;
+
+&lt;p&gt;Going on down the sorting algorithms difficulty-ladder we next encounter sorts with O(n log(n)) time-complexities. Here is where recursion comes in and the implementations begin to become more interesting and non trivial.&lt;/p&gt;
+
+&lt;h3 id="mergesort"&gt;Merge sort&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Merge-sort-example-300px.gif" alt=""&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Conceptually, a merge sort works as follows:&lt;/p&gt;
+  
+  &lt;ol&gt;
+  &lt;li&gt;Divide the unsorted list into n sublists, each containing 1 element (a list of 1 element is considered sorted). &lt;/li&gt;
+  &lt;li&gt;Repeatedly merge sublists to produce new sorted sublists until there is only 1 sublist remaining. This will be the sorted list. - &lt;a href="https://en.wikipedia.org/wiki/merge_sort" title="Wikipedia: Merge sort"&gt;Merge sort&lt;/a&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Merge sort was invented in the time of the tape machines by the legendary mathematician Jon von Neumann.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/HD.3F.191_%2811239892036%29.jpg/383px-HD.3F.191_%2811239892036%29.jpg" alt="Jon von Neumann"&gt;&lt;/p&gt;
+
+&lt;p&gt;My implementation gets straight to the point. First we split the list into single element list and then merge those small lists recursively so that at each point the smaller sub-lists are individually sorted. The function that has the merge functionality is maintained within the merge_sort function itself for brevity and as not to dirty our global name-space. &lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/426262cb4897fd621316.js"&gt;&lt;/script&gt;
+
+&lt;h3 id="heapsort"&gt;Heap sort&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Sorting_heapsort_anim.gif" alt=""&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;In computer science, heapsort is a comparison-based sorting algorithm. Heapsort can be thought of as an improved selection sort: like that algorithm, it divides its input into a sorted and an unsorted region, and it iteratively shrinks the unsorted region by extracting the largest element and moving that to the sorted region. The improvement consists of the use of a heap data structure rather than a linear-time search to find the maximum. - &lt;a href="https://en.wikipedia.org/wiki/heap_sort" title="Wikipedia: Heap sort"&gt;heap sort&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The abstract description of heap sort may make it seem a little daunting but it really isn't much more complex than merge sort at all. The functionality I had to implement was &lt;em&gt;heapify&lt;/em&gt;, take a list and make a &lt;a href="https://en.wikipedia.org/wiki/Heap_%28data_structure%29"&gt;heap data structure&lt;/a&gt; out of it and sift&lt;em&gt;_&lt;/em&gt;down, a function that returns a heap into a legal state when the top element has been removed from it.&lt;/p&gt;
+
+&lt;p&gt;My implementation goes like this: First create a heap using the &lt;em&gt;heapify&lt;/em&gt; function, basically placing each item of the list at the bottom of the heap and then sift the elements up (incorrect elements down) until the inserted element is at a place so that the heap is valid. Next I remove the top node of the heap, which we know will be the lowest/highest/which ever way you want to sort your list, place it in a new sorted&lt;em&gt;_&lt;/em&gt;list and then we make the heap valid again. We continue this procedure until there are no leafs left in the heap.&lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/f9f5dbf066c0bc90bc24.js"&gt;&lt;/script&gt;
+
+&lt;h3 id="quicksort"&gt;Quick sort&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Sorting_quicksort_anim.gif" alt=""&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Quicksort is a divide and conquer algorithm. Quicksort first divides a large array into two smaller sub-arrays: the low elements and the high elements. Quicksort can then recursively sort the sub-arrays. The steps are:&lt;/p&gt;
+  
+  &lt;ol&gt;
+  &lt;li&gt;Pick an element, called a pivot, from the array.&lt;/li&gt;
+  &lt;li&gt;Reorder the array so that all elements with values less than the pivot come before the pivot, while all elements with values greater than the pivot come after it (equal values can go either way). After this partitioning, the pivot is in its final position. This is called the partition operation.&lt;/li&gt;
+  &lt;li&gt;Recursively apply the above steps to the sub-array of elements with smaller values and separately to the sub-array of elements with greater values. - &lt;a href="https://en.wikipedia.org/wiki/quick_sort" title="Wikipedia: Quick sort"&gt;Quick sort&lt;/a&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I proceeded using a similar approach as I did in merge sort, the functions that do the heavy lifting are maintained within the quick_sort function itself. The implementation follows directly from the description on &lt;a href="https://en.wikipedia.org/wiki/quick_sort" title="Wikipedia: Quick sort"&gt;Wikipedia&lt;/a&gt; and I was lazy so I just chose the last element to always be the pivot in each sub-list that is to be sorted.&lt;/p&gt;
+
+&lt;script src="https://gist.github.com/multivac61/4be0963369db9ff59be0.js"&gt;&lt;/script&gt;
+
+&lt;p&gt;One thing I noticed is that the python interpreter will throw the error &lt;code&gt;RuntimeError: maximum recursion depth exceeded in cmp&lt;/code&gt; if the test cases I tried were too large. This doesn't mean that my implementation is buggy but simply that the interpreter has a default recursion depth which can be modified by the user. More about that &lt;a href="http://stackoverflow.com/questions/25105541/python-quicksort-runtime-error-maximum-recursion-depth-exceeded-in-cmp"&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;These implementations were much easier than I had imagined and I didn't really have any big problems. Next up: code a Search class, implement the different algorithms there and do some testing! I also want to try and implement some of the AI search algorithms (A*, minimax &amp;amp; alpha-beta pruning).&lt;/p&gt;</content:encoded></item></channel></rss>

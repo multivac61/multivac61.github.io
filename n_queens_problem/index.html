@@ -1,0 +1,243 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>The problem with N queens</title>
+    <meta name="description" content="">
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=9684cc546d">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+
+    <link rel="canonical" href="index.html">
+    <meta name="referrer" content="origin-when-cross-origin">
+    
+    <meta property="og:site_name" content="Ólafur not Olaf">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="The problem with N queens">
+    <meta property="og:description" content="I'm currently taking an introductory course in AI at McGill. In reality the course is not really an introductory course as it covers a broad range of theory and is extremely demanding (as in bloody hard). That being said I feel like I'm getting a good overview of the general">
+    <meta property="og:url" content="http://localhost:2368/n_queens_problem/">
+    <meta property="article:published_time" content="2015-10-21T16:16:58.000Z">
+    <meta property="article:modified_time" content="2015-10-21T16:22:59.000Z">
+    <meta property="article:tag" content="python">
+    <meta property="article:tag" content="simpleai">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="The problem with N queens">
+    <meta name="twitter:description" content="I'm currently taking an introductory course in AI at McGill. In reality the course is not really an introductory course as it covers a broad range of theory and is extremely demanding (as in bloody hard). That being said I feel like I'm getting a good overview of the general">
+    <meta name="twitter:url" content="http://localhost:2368/n_queens_problem/">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="Olafur Bogason">
+    <meta name="twitter:label2" content="Filed under">
+    <meta name="twitter:data2" content="python, simpleai">
+    <meta name="twitter:site" content="@olafurbogason">
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Ólafur not Olaf",
+        "logo": "http://localhost:2368/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Olafur Bogason",
+        "url": "http://localhost:2368/author/olafur/",
+        "sameAs": []
+    },
+    "headline": "The problem with N queens",
+    "url": "http://localhost:2368/n_queens_problem/",
+    "datePublished": "2015-10-21T16:16:58.000Z",
+    "dateModified": "2015-10-21T16:22:59.000Z",
+    "keywords": "python, simpleai",
+    "description": "I&#x27;m currently taking an introductory course in AI at McGill. In reality the course is not really an introductory course as it covers a broad range of theory and is extremely demanding (as in bloody hard). That being said I feel like I&#x27;m getting a good overview of the general"
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.9">
+    <link rel="alternate" type="application/rss+xml" title="Ólafur not Olaf" href="../rss/index.html">
+</head>
+<body class="post-template tag-python tag-simpleai nav-closed">
+
+    <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="index.html#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+            <li class="nav-home" role="presentation"><a href="../">Home</a></li>
+    </ul>
+        <a class="subscribe-button icon-feed" href="../rss/index.rss">Subscribe</a>
+</div>
+<span class="nav-cover"></span>
+
+
+    <div class="site-wrapper">
+
+        
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        
+            <a class="menu-button icon-menu" href="index.html#"><span class="word">Menu</span></a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+    <article class="post tag-python tag-simpleai">
+
+        <header class="post-header">
+            <h1 class="post-title">The problem with N queens</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2015-10-21">21 October 2015</time>  on <a href="../tag/python/">python</a>, <a href="../tag/simpleai/">simpleai</a>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>I'm currently taking an <a href="http://www.cim.mcgill.ca/~jer/courses/ai/">introductory course in AI</a> at McGill. In reality the course is not really an introductory course as it covers a broad range of theory and is extremely demanding (as in bloody hard). That being said I feel like I'm getting a good overview of the general landscape of AI, which is awesome.</p>
+
+<p>The course textbook we're using is <a href="http://aima.cs.berkeley.edu/">AI: A Modern Approach</a>. In a chapter about classical search the authors talk about a problem called <a href="https://en.wikipedia.org/wiki/Eight_queens_puzzle">the 8-Queens problem</a>.</p>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Chess_piece_-_White_queen.jpg/279px-Chess_piece_-_White_queen.jpg" alt=""></p>
+
+<blockquote>
+  <p>The eight queens puzzle is the problem of placing eight chess queens on an 8×8 chessboard so that no two queens threaten each other. - <a href="https://en.wikipedia.org/wiki/Eight_queens_puzzle">Wikipedia</a></p>
+</blockquote>
+
+<p>I must admit that I'm not a big chess player but I did find this to be an interesting problem in its own right. Below are a couple of implementations for solving the 8-Queens problem using the <a href="https://github.com/simpleai-team/simpleai">simpleai</a> library and its built in <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* search</a> algorithm.</p>
+
+<p>One short remark before we continue: There's really nothing that says that we have to limit ourselves to a 8x8 board instead of a board of maybe 9x9 or 99x99 squares. So from now on I will talk about the N queens problem on a NxN board instead. Now let's look at implementations...</p>
+
+<hr>
+
+<h3 id="onequeenatatime">One queen at a time</h3>
+
+<p>The first implementation is the most simple and straight forward I could come up with. The algorithm goes as follows: You start out with a blank board represented by a NxN array in python which we call our initial state. The set of actions we can do to generate a new state is to place a queen at some point (i, j) on the board where 0 &lt;= i, j &lt; N. You then run A* search on the initial state.</p>
+
+<p>At each state the algorithm will place one queen on the board and makes sure that it isn't being attacked. We keep on placing new queens on the board until the board has been filled with N queens where none of them are under attack. The heuristic I'm using is very simple: calculate how many queens we have left to place on the board at the given state, pretty simple. </p>
+
+<script src="https://gist.github.com/multivac61/becb9eb4d8b00d89e664.js"></script>
+
+<p>At each time the A* search generates a new state it tries out N^2 different placements of queens, in the worst case. This approach is very slow and we aren't taking advantage of the structure of the problem at all</p>
+
+<h3 id="allqueensonboardandswap">All queens on board and swap</h3>
+
+<p>Well what about instead of starting out with an initial state that corresponds to an empty NxN board, we place N queens randomly on the board so that we have one queen in each row of the board? We would start out in a state that potentially is not valid since there is a good chance that we will have some queens attacking each other. That's just fine because we only need to swap queens on the board until we have a legal state with no queen under attack.</p>
+
+<p>To generate new states we swap two queens so that the resulting state will have fewer queens under attack than the prior state. The heuristic we use is the sum of all attacks (i.e. if a queen is under attack that would result in a +2 added to the sum etc.).</p>
+
+<script src="https://gist.github.com/multivac61/5e80c13e21dbea75182e.js"></script>
+
+<p>This approach naturally sounds like a  better idea than placing one queen at a time, but I would argue that we haven't started to take any real advantage of the structure of the problem. Let's go and do something about that!</p>
+
+<h3 id="onerowatatime">One row at a time</h3>
+
+<p>We know that each row and column must have exactly one queen present. That essentially means that we don't really need to think about every single square on the board when placing a queen. Instead we can add a queen at the <em>i-th</em> index in a row, that is not present in the board. This brings our set of actions we can make at each state down from N^2 to N (in the worst case). That makes a huge difference in running time as we will see.</p>
+
+<p>This implementation works by starting out with an empty board, expressed as an empty tuple in Python. When a new state is generated we append a row containing exactly one queen, to the previous state. We can think of this as adding a queen to the row that is nearest to the <em>top</em> of the NxN board which contains no queen yet. The heuristics is the same we used for the previous implementation. We continue adding queens to the board, one row at a time, until the board is full and no queen is under attack.</p>
+
+<script src="https://gist.github.com/multivac61/212acb3baded09107793.js"></script>
+
+<hr>
+
+<h3 id="timecomparisonofimplementations">Time comparison of implementations</h3>
+
+<iframe width="600" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~horigome/97.embed"></iframe>
+
+<iframe width="600" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~horigome/83.embed"></iframe>
+
+<iframe width="600" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~horigome/44.embed"></iframe>
+
+<p>For each N I sampled 4 turns and took the average of their runtimes.</p>
+
+<p>It's very difficult to say anything solid about this time comparison due to the way in which possible actions are randomized at each step of the algorithm. I can however say that by essentially adding <em>knowledge</em> to our implementation (by exploiting the problem structure) we were able to make the search go significantly faster than the most naive approach (compare NQueensSquare to NQueensRow). </p>
+
+<hr>
+
+<p><img src="http://localhost:2368/content/images/2015/10/queens-1.png" alt="">
+In this post we went through three different solution implementation for the N-Queen problem and saw how important representing a problem in a smart way is when running A* search. If you're interested in seeing more code, go get it at <a href="https://github.com/multivac61/nqueens">my Github page</a></p>
+
+<p>I'm sure there must be faster ways to solve the N Queen problem and my implementations were merely meant as an exercise in thinking about problem representation and then coding it up in Python. If you have implemented or know of a faster way to do this or have anything to add just comment below.</p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+                <h4><a href="../author/olafur/">Olafur Bogason</a></h4>
+
+                    <p>Read <a href="../author/olafur/">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/intent/tweet?text=The%20problem%20with%20N%20queens&amp;url=http://localhost:2368/n_queens_problem/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/n_queens_problem/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/n_queens_problem/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+
+        </footer>
+
+    </article>
+</main>
+
+<aside class="read-next">
+    <a class="read-next-story no-cover" href="../knights_tour/">
+        <section class="post">
+            <h2>A Knight's Tour</h2>
+            <p>Another interesting problem relating to classical search in AI is the Knight's Tour.   A knight's tour is a sequence…</p>
+        </section>
+    </a>
+    <a class="read-next-story prev no-cover" href="../note-to-self/">
+        <section class="post">
+            <h2>Note to self.self: List comprehensions in Python 2.x leak!</h2>
+            <p>After considerable amount of debugging on some code I've been writing in Python 2.x I finally found the…</p>
+        </section>
+    </a>
+</aside>
+
+
+
+        <footer class="site-footer clearfix">
+            <section class="copyright"><a href="../">Ólafur not Olaf</a> © 2016</section>
+            <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+        </footer>
+
+    </div>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-65029525-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=9684cc546d"></script>
+    <script type="text/javascript" src="../assets/js/index.js?v=9684cc546d"></script>
+
+</body>
