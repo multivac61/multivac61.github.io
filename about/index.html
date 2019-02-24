@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="multivac61.github.io/css/bootstrap.min.css" />
 
   
-  <title>Note to self.self: List comprehensions in Python 2.x leak! | multivac61.github.com</title>
+  <title>About | multivac61.github.com</title>
   
 
   <script type="text/javascript" async
@@ -162,32 +162,34 @@ a:focus {
   
   <div class="container">
     <article>
-      <h1>Note to self.self: List comprehensions in Python 2.x leak!</h1>
-<p>
-  <small class="text-secondary">
-  
-  
-  Oct 18, 2015, updated Feb 24, 2019
-  </small>
-  
+      <h1>About</h1>
 
-<small><code><a href="multivac61.github.io/tags/python">python</a></code></small>
 
-</p>
-<p>After considerable amount of debugging on some code I&rsquo;ve been writing in Python 2.x I finally found the bug. This time it didn&rsquo;t arise because I was sloppy, as it so often does, but because of faulty behaviour intrinsic to the language design of Python 2.x itself..</p>
+<h2 id="this-theme">This Theme</h2>
 
-<figure>
-    <img src="/images/18-dear-liza.png"/> 
-</figure>
+<p>Thanks for visiting this theme demo. If you&rsquo;re interested, checkout my other stuff over at <a href="https://zwbetz.com">https://zwbetz.com</a></p>
 
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#ba2121">&#39;This is an example of list comprehension control variables being leaked to their outer scope&#39;</span>
+<h2 id="hugo">Hugo</h2>
 
-<span style="color:#008000;font-weight:bold">for</span> i <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(<span style="color:#666">10</span>):
-    a <span style="color:#666">=</span> [i <span style="color:#008000;font-weight:bold">for</span> i <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(<span style="color:#666">43</span>)]
-    <span style="color:#008000;font-weight:bold">print</span>(i) <span style="color:#408080;font-style:italic"># will print 42 every time!</span></code></pre></div>
-<p>It&rsquo;s no surprise that <a href="http://stackoverflow.com/questions/4575698/python-list-comprehension-overriding-value">others</a> have encountered this bug/feature before and it has supposedly been fixed in Python 3.x.</p>
+<p>Hugo is the <strong>world’s fastest framework for building websites</strong>. It is written in Go.</p>
 
-<p>Maybe this is a good example of why I should be switching over to Python 3.x soon&hellip;ish&hellip;</p>
+<p>It makes use of a variety of open source projects including:</p>
+
+<ul>
+<li><a href="https://github.com/russross/blackfriday">https://github.com/russross/blackfriday</a></li>
+<li><a href="https://github.com/alecthomas/chroma">https://github.com/alecthomas/chroma</a></li>
+<li><a href="https://github.com/muesli/smartcrop">https://github.com/muesli/smartcrop</a></li>
+<li><a href="https://github.com/spf13/cobra">https://github.com/spf13/cobra</a></li>
+<li><a href="https://github.com/spf13/viper">https://github.com/spf13/viper</a></li>
+</ul>
+
+<p>Learn more and contribute on <a href="https://github.com/gohugoio">GitHub</a>.</p>
+
+<hr />
+
+<p><small>
+<em>Favicon made by <a href="https://www.freepik.com/">Freepik</a>, from <a href="https://www.flaticon.com/">Flaticon</a>, licensed by <a href="http://creativecommons.org/licenses/by/3.0/">CC 3.0</a>.</em>
+</small></p>
 
     </article>
   </div>

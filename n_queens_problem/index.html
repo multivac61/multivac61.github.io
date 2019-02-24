@@ -1,231 +1,353 @@
+<!doctype html>
+<html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>The problem with N queens</title>
-    <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.53" />
 
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
 
-    <link rel="shortcut icon" href="../favicon.ico">
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="multivac61.github.io/apple-touch-icon.png">
 
-    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=aff7cdc8fe">
-    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="multivac61.github.io/favicon-32x32.png">
 
-    <link rel="canonical" href="http://obogason.com/n_queens_problem/">
-    <meta name="referrer" content="origin-when-cross-origin">
-    
-    <meta property="og:site_name" content="Ólafur not Olaf">
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="The problem with N queens">
-    <meta property="og:description" content="I'm currently taking an introductory course in AI at McGill. In reality the course is not really an introductory course as it covers a broad range of theory and is extremely demanding (as in bloody hard). That being said I feel like I'm getting a good overview of the general">
-    <meta property="og:url" content="http://obogason.com/n_queens_problem/">
-    <meta property="article:published_time" content="2015-10-21T16:16:58.000Z">
-    <meta property="article:modified_time" content="2015-10-21T16:22:59.000Z">
-    <meta property="article:tag" content="python">
-    <meta property="article:tag" content="simpleai">
-    
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="The problem with N queens">
-    <meta name="twitter:description" content="I'm currently taking an introductory course in AI at McGill. In reality the course is not really an introductory course as it covers a broad range of theory and is extremely demanding (as in bloody hard). That being said I feel like I'm getting a good overview of the general">
-    <meta name="twitter:url" content="http://obogason.com/n_queens_problem/">
-    <meta name="twitter:label1" content="Written by">
-    <meta name="twitter:data1" content="Olafur Bogason">
-    <meta name="twitter:label2" content="Filed under">
-    <meta name="twitter:data2" content="python, simpleai">
-    <meta name="twitter:site" content="@olafurbogason">
-    
-    <script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "publisher": {
-        "@type": "Organization",
-        "name": "Ólafur not Olaf",
-        "logo": "http://obogason.com/ghost/img/ghosticon.jpg"
-    },
-    "author": {
-        "@type": "Person",
-        "name": "Olafur Bogason",
-        "url": "http://obogason.com/author/olafur/",
-        "sameAs": []
-    },
-    "headline": "The problem with N queens",
-    "url": "http://obogason.com/n_queens_problem/",
-    "datePublished": "2015-10-21T16:16:58.000Z",
-    "dateModified": "2015-10-21T16:22:59.000Z",
-    "keywords": "python, simpleai",
-    "description": "I&#x27;m currently taking an introductory course in AI at McGill. In reality the course is not really an introductory course as it covers a broad range of theory and is extremely demanding (as in bloody hard). That being said I feel like I&#x27;m getting a good overview of the general"
+  
+  <link rel="icon" type="image/png" sizes="16x16" href="multivac61.github.io/favicon-16x16.png">
+
+  
+  <link rel="manifest" href="multivac61.github.io/site.webmanifest">
+
+  
+  <link rel="mask-icon" href="multivac61.github.io/safari-pinned-tab.svg" color="">
+
+  <meta name="msapplication-TileColor" content="">
+
+  <meta name="theme-color" content="">
+
+  
+  <link rel="stylesheet" href="multivac61.github.io/css/bootstrap.min.css" />
+
+  
+  <title>The problem with N queens | multivac61.github.com</title>
+  
+
+  <script type="text/javascript" async
+          src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+   MathJax.Hub.Config({
+       tex2jax: {
+           inlineMath: [['$','$'], ['\\(','\\)']],
+           displayMath: [['$$','$$']],
+           processEscapes: true,
+           processEnvironments: true,
+           skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+           TeX: { equationNumbers: { autoNumber: "AMS" },
+                  extensions: ["AMSmath.js", "AMSsymbols.js"] }
+       }
+   });
+   MathJax.Hub.Queue(function() {
+       
+       
+       
+       var all = MathJax.Hub.getAllJax(), i;
+       for(i = 0; i < all.length; i += 1) {
+           all[i].SourceElement().parentNode.className += ' has-jax';
+       }
+   });
+
+   MathJax.Hub.Config({
+       
+       TeX: { equationNumbers: { autoNumber: "AMS" } }
+   });
+  </script>
+
+  <style>
+body {
+  min-width: 300px;
 }
-    </script>
 
-    <meta name="generator" content="Ghost 0.9">
-    <link rel="alternate" type="application/rss+xml" title="Ólafur not Olaf" href="http://obogason.com/rss/">
+.custom-navbar {
+  margin-bottom: 1em;
+  height: 60px;
+}
+
+.custom-navbar a {
+  display: inline-block; 
+  padding: 18px 0;
+  margin-right: 1em; 
+  font-weight: bold; 
+}
+
+.custom-navbar a:hover,
+.custom-navbar a:focus {
+  text-decoration: none; 
+}
+
+@media print {
+  .custom-navbar {
+    display: none;
+  }
+}
+
+article {
+  padding-bottom: 1em;
+}
+
+img {
+  max-width: 100%;
+}
+
+
+body {
+  background-color: #fff;
+}
+
+
+
+body {
+  color: #212529;
+}
+
+
+
+a {
+  color: #007bff;
+}
+
+
+
+a:hover,
+a:focus {
+  color: #0056b3;
+}
+
+
+
+.custom-navbar {
+  background-color: #ffffff;
+}
+
+
+
+.custom-navbar a {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+
+
+.custom-navbar a:hover,
+.custom-navbar a:focus {
+  color: rgba(255, 255, 255, 1);
+}
+
+
+
+.container {
+  max-width: 800px;
+}
+
+
+
+
+
+</style>
 </head>
-<body class="post-template tag-python tag-simpleai nav-closed">
-
-    
-
-    <div class="site-wrapper">
-
-        
 
 
-<header class="main-header post-head no-cover">
-    <nav class="main-nav  clearfix">
-        
-    </nav>
-</header>
+<body>
+  
+  
+  <div class="container">
+    <article>
+      <h1>The problem with N queens</h1>
+<p>
+  <small class="text-secondary">
+  
+  
+  Oct 21, 2015, updated Feb 19, 2019
+  </small>
+  
 
-<main class="content" role="main">
-    <article class="post tag-python tag-simpleai">
+<small><code><a href="multivac61.github.io/tags/python">python</a></code></small>
 
-        <header class="post-header">
-            <h1 class="post-title">The problem with N queens</h1>
-            <section class="post-meta">
-                <time class="post-date" datetime="2015-10-21">21 October 2015</time>  on <a href="../tag/python/">python</a>, <a href="../tag/simpleai/">simpleai</a>
-            </section>
-        </header>
 
-        <section class="post-content">
-            <p>I'm currently taking an <a href="http://www.cim.mcgill.ca/~jer/courses/ai/">introductory course in AI</a> at McGill. In reality the course is not really an introductory course as it covers a broad range of theory and is extremely demanding (as in bloody hard). That being said I feel like I'm getting a good overview of the general landscape of AI, which is awesome.</p>
+<small><code><a href="multivac61.github.io/tags/ai">ai</a></code></small>
 
-<p>The course textbook we're using is <a href="http://aima.cs.berkeley.edu/">AI: A Modern Approach</a>. In a chapter about classical search the authors talk about a problem called <a href="https://en.wikipedia.org/wiki/Eight_queens_puzzle">the 8-Queens problem</a>.</p>
+</p>
 
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Chess_piece_-_White_queen.jpg/279px-Chess_piece_-_White_queen.jpg" alt=""></p>
 
-<blockquote>
-  <p>The eight queens puzzle is the problem of placing eight chess queens on an 8×8 chessboard so that no two queens threaten each other. - <a href="https://en.wikipedia.org/wiki/Eight_queens_puzzle">Wikipedia</a></p>
-</blockquote>
+<p>I&rsquo;m currently taking an introductory course in AI at McGill. In reality the course is not really an introductory course as it covers a broad range of theory and is extremely demanding (as in bloody hard). That being said I feel like I&rsquo;m getting a good overview of the general landscape of AI, which is awesome.</p>
 
-<p>I must admit that I'm not a big chess player but I did find this to be an interesting problem in its own right. Below are a couple of implementations for solving the 8-Queens problem using the <a href="https://github.com/simpleai-team/simpleai">simpleai</a> library and its built in <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* search</a> algorithm.</p>
+<p>The course textbook we&rsquo;re using is AI: A Modern Approach. In a chapter about classical search the authors talk about a problem called the 8-Queens problem..</p>
 
-<p>One short remark before we continue: There's really nothing that says that we have to limit ourselves to a 8x8 board instead of a board of maybe 9x9 or 99x99 squares. So from now on I will talk about the N queens problem on a NxN board instead. Now let's look at implementations...</p>
+<p><em>The eight queens puzzle is the problem of placing eight chess queens on an 8×8 chessboard so that no two queens threaten each other. Wikipedia</em></p>
 
-<hr>
+<p>I must admit that I&rsquo;m not a big chess player but I did find this to be an interesting problem in its own right. Below are a couple of implementations for solving the 8-Queens problem using the simpleai library and its built in A* search algorithm.</p>
 
-<h3 id="onequeenatatime">One queen at a time</h3>
+<p>One short remark before we continue: There&rsquo;s really nothing that says that we have to limit ourselves to a 8x8 board instead of a board of maybe 9x9 or 99x99 squares. So from now on I will talk about the N queens problem on a NxN board instead. Now let&rsquo;s look at implementations&hellip;</p>
+
+<p>Hallo Danni..</p>
+
+<h2 id="one-queen-at-a-time">One queen at a time</h2>
 
 <p>The first implementation is the most simple and straight forward I could come up with. The algorithm goes as follows: You start out with a blank board represented by a NxN array in python which we call our initial state. The set of actions we can do to generate a new state is to place a queen at some point (i, j) on the board where 0 &lt;= i, j &lt; N. You then run A* search on the initial state.</p>
 
-<p>At each state the algorithm will place one queen on the board and makes sure that it isn't being attacked. We keep on placing new queens on the board until the board has been filled with N queens where none of them are under attack. The heuristic I'm using is very simple: calculate how many queens we have left to place on the board at the given state, pretty simple. </p>
+<p>At each state the algorithm will place one queen on the board and makes sure that it isn&rsquo;t being attacked. We keep on placing new queens on the board until the board has been filled with N queens where none of them are under attack. The heuristic I&rsquo;m using is very simple: calculate how many queens we have left to place on the board at the given state, pretty simple.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">NQueensSquare</span>(SearchProblem):
+    <span style="color:#008000;font-weight:bold">def</span> __init__(self, N):
+        <span style="color:#008000">super</span>(NQueensSquare, self)<span style="color:#666">.</span>__init__()
+        self<span style="color:#666">.</span>N <span style="color:#666">=</span> N
+        self<span style="color:#666">.</span>initial_state <span style="color:#666">=</span> <span style="color:#008000">tuple</span>([<span style="color:#008000">tuple</span>([<span style="color:#666">0</span> <span style="color:#008000;font-weight:bold">for</span> i <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(N)]) <span style="color:#008000;font-weight:bold">for</span> j <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(N)])
+        self<span style="color:#666">.</span>_actions      <span style="color:#666">=</span> [(i, j) <span style="color:#008000;font-weight:bold">for</span> i <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(N) <span style="color:#008000;font-weight:bold">for</span> j <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(N)]
 
-<script src="https://gist.github.com/multivac61/becb9eb4d8b00d89e664.js"></script>
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">actions</span>(self, s):
+        <span style="color:#ba2121">&#39;&#39;&#39;Possible actions from a state.&#39;&#39;&#39;</span>
+        <span style="color:#408080;font-style:italic"># generate every possible state then filter out invalid</span>
+        tmp <span style="color:#666">=</span> [a <span style="color:#008000;font-weight:bold">for</span> a <span style="color:#a2f;font-weight:bold">in</span> self<span style="color:#666">.</span>_actions <span style="color:#008000;font-weight:bold">if</span> self<span style="color:#666">.</span>_is_valid(self<span style="color:#666">.</span>result(s, a))]
+        shuffle(tmp)
+        <span style="color:#008000;font-weight:bold">return</span> tmp
 
-<p>At each time the A* search generates a new state it tries out N^2 different placements of queens, in the worst case. This approach is very slow and we aren't taking advantage of the structure of the problem at all</p>
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">result</span>(self, s, a):
+        <span style="color:#ba2121">&#39;&#39;&#39;Result of applying an action to a state.&#39;&#39;&#39;</span>
+        (i, j) <span style="color:#666">=</span> a
+        b      <span style="color:#666">=</span> <span style="color:#008000">list</span>(s)    <span style="color:#408080;font-style:italic"># make immutable object to place queen</span>
+        tmp    <span style="color:#666">=</span> <span style="color:#008000">list</span>(b[i])
+        tmp[j] <span style="color:#666">=</span> <span style="color:#666">1</span>          <span style="color:#408080;font-style:italic"># place queen to square (i,j) in board</span>
 
-<h3 id="allqueensonboardandswap">All queens on board and swap</h3>
+        s    <span style="color:#666">=</span> <span style="color:#008000">list</span>(s)      <span style="color:#408080;font-style:italic"># extra steps for immutability</span>
+        s[i] <span style="color:#666">=</span> <span style="color:#008000">tuple</span>(tmp)   <span style="color:#408080;font-style:italic"># required by A* search in simpleai</span>
+        <span style="color:#008000;font-weight:bold">return</span> <span style="color:#008000">tuple</span>(s)
 
-<p>Well what about instead of starting out with an initial state that corresponds to an empty NxN board, we place N queens randomly on the board so that we have one queen in each row of the board? We would start out in a state that potentially is not valid since there is a good chance that we will have some queens attacking each other. That's just fine because we only need to swap queens on the board until we have a legal state with no queen under attack.</p>
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">is_goal</span>(self, state):
+        <span style="color:#ba2121">&#39;&#39;&#39;Goal: N queens on board and no queen under attack.&#39;&#39;&#39;</span>
+        <span style="color:#008000;font-weight:bold">return</span> self<span style="color:#666">.</span>_num_queens_on_board(state) <span style="color:#666">==</span> self<span style="color:#666">.</span>N
+
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">heuristic</span>(self, state):
+        <span style="color:#008000;font-weight:bold">return</span> self<span style="color:#666">.</span>N <span style="color:#666">-</span> self<span style="color:#666">.</span>_num_queens_on_board(state)</code></pre></div>
+<p>At each time the A* search generates a new state it tries out N^2 different placements of queens, in the worst case. This approach is very slow and we aren&rsquo;t taking advantage of the structure of the problem at all</p>
+
+<h2 id="all-queens-on-board-and-swap">All queens on board and swap</h2>
+
+<p>Well what about instead of starting out with an initial state that corresponds to an empty NxN board, we place N queens randomly on the board so that we have one queen in each row of the board? We would start out in a state that potentially is not valid since there is a good chance that we will have some queens attacking each other. That&rsquo;s just fine because we only need to swap queens on the board until we have a legal state with no queen under attack.</p>
 
 <p>To generate new states we swap two queens so that the resulting state will have fewer queens under attack than the prior state. The heuristic we use is the sum of all attacks (i.e. if a queen is under attack that would result in a +2 added to the sum etc.).</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">NQueensSwap</span>(SearchProblem):
+    <span style="color:#008000;font-weight:bold">def</span> __init__(self, N):
+        self<span style="color:#666">.</span>N <span style="color:#666">=</span> N
+        init               <span style="color:#666">=</span> [i <span style="color:#008000;font-weight:bold">for</span> i <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(N)]
+        shuffle(init)   <span style="color:#408080;font-style:italic"># randomize the initial array</span>
+        self<span style="color:#666">.</span>initial_state <span style="color:#666">=</span> <span style="color:#008000">tuple</span>(init)    <span style="color:#408080;font-style:italic"># states must me immutable</span>
+        self<span style="color:#666">.</span>_actions      <span style="color:#666">=</span> [ (i, j) <span style="color:#008000;font-weight:bold">for</span> i <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(N)
+                                      <span style="color:#008000;font-weight:bold">for</span> j <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(i,N)
+                                          <span style="color:#008000;font-weight:bold">if</span> i <span style="color:#666">!=</span> j ]
 
-<script src="https://gist.github.com/multivac61/5e80c13e21dbea75182e.js"></script>
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">actions</span>(self, s):
+        <span style="color:#ba2121">&#39;&#39;&#39;Possible actions from a state.&#39;&#39;&#39;</span>
+        <span style="color:#408080;font-style:italic"># generate every possible state then filter out invalid</span>
+        tmp <span style="color:#666">=</span> [a <span style="color:#008000;font-weight:bold">for</span> a <span style="color:#a2f;font-weight:bold">in</span> self<span style="color:#666">.</span>_actions <span style="color:#008000;font-weight:bold">if</span> self<span style="color:#666">.</span>_is_valid(self<span style="color:#666">.</span>result(s, a))]
+        shuffle(tmp) <span style="color:#408080;font-style:italic"># randomize actions at each step</span>
+        <span style="color:#008000;font-weight:bold">return</span> tmp
 
-<p>This approach naturally sounds like a  better idea than placing one queen at a time, but I would argue that we haven't started to take any real advantage of the structure of the problem. Let's go and do something about that!</p>
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">result</span>(self, s, a):
+        <span style="color:#ba2121">&#39;&#39;&#39;Result of applying an action to a state.&#39;&#39;&#39;</span>
+        b          <span style="color:#666">=</span> <span style="color:#008000">list</span>(s)     <span style="color:#408080;font-style:italic"># make board mutable to swap queens</span>
+        (i, j)     <span style="color:#666">=</span> a
+        b[i], b[j] <span style="color:#666">=</span> b[j], b[i] <span style="color:#408080;font-style:italic"># swap queens</span>
+        <span style="color:#008000;font-weight:bold">return</span> <span style="color:#008000">tuple</span>(b)         <span style="color:#408080;font-style:italic"># make immutable again to search</span>
 
-<h3 id="onerowatatime">One row at a time</h3>
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">is_goal</span>(self, state):
+        <span style="color:#ba2121">&#39;&#39;&#39;Goal: N queens on board and no queen under attack.&#39;&#39;&#39;</span>
+        <span style="color:#008000;font-weight:bold">return</span> self<span style="color:#666">.</span>heuristic(state) <span style="color:#666">==</span> <span style="color:#666">0</span>
 
-<p>We know that each row and column must have exactly one queen present. That essentially means that we don't really need to think about every single square on the board when placing a queen. Instead we can add a queen at the <em>i-th</em> index in a row, that is not present in the board. This brings our set of actions we can make at each state down from N^2 to N (in the worst case). That makes a huge difference in running time as we will see.</p>
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">heuristic</span>(self, state):
+        <span style="color:#408080;font-style:italic"># scan the state horizontally, vertically and diagonally (left &amp; right)</span>
+        <span style="color:#408080;font-style:italic"># return the number of attacks summed for all queens</span>
+        nattacks <span style="color:#666">=</span> self<span style="color:#666">.</span>_num_attacks
+        <span style="color:#008000;font-weight:bold">return</span> nattacks(state, (<span style="color:#666">0</span>, <span style="color:#666">1</span>)) <span style="color:#666">+</span> nattacks(state, (<span style="color:#666">1</span>, <span style="color:#666">0</span>)) <span style="color:#666">+</span> \
+            nattacks(state, (<span style="color:#666">1</span>,<span style="color:#666">-</span><span style="color:#666">1</span>)) <span style="color:#666">+</span> nattacks(state, (<span style="color:#666">1</span>, <span style="color:#666">1</span>))
 
-<p>This implementation works by starting out with an empty board, expressed as an empty tuple in Python. When a new state is generated we append a row containing exactly one queen, to the previous state. We can think of this as adding a queen to the row that is nearest to the <em>top</em> of the NxN board which contains no queen yet. The heuristics is the same we used for the previous implementation. We continue adding queens to the board, one row at a time, until the board is full and no queen is under attack.</p>
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">_is_valid</span>(self, s):
+        <span style="color:#ba2121">&#39;&#39;&#39;Check if a state is valid.&#39;&#39;&#39;</span>
+        <span style="color:#408080;font-style:italic"># all states are valid by default</span>
+        <span style="color:#008000;font-weight:bold">return</span> True</code></pre></div>
+<p>This approach naturally sounds like a better idea than placing one queen at a time, but I would argue that we haven&rsquo;t started to take any real advantage of the structure of the problem. Let&rsquo;s go and do something about that!</p>
 
-<script src="https://gist.github.com/multivac61/212acb3baded09107793.js"></script>
+<h2 id="one-row-at-a-time">One row at a time</h2>
 
-<hr>
+<p>We know that each row and column must have exactly one queen present. That essentially means that we don&rsquo;t really need to think about every single square on the board when placing a queen. Instead we can add a queen at the i-th index in a row, that is not present in the board. This brings our set of actions we can make at each state down from N^2 to N (in the worst case). That makes a huge difference in running time as we will see.</p>
 
-<h3 id="timecomparisonofimplementations">Time comparison of implementations</h3>
+<p>This implementation works by starting out with an empty board, expressed as an empty tuple in Python. When a new state is generated we append a row containing exactly one queen, to the previous state. We can think of this as adding a queen to the row that is nearest to the top of the NxN board which contains no queen yet. The heuristics is the same we used for the previous implementation. We continue adding queens to the board, one row at a time, until the board is full and no queen is under attack.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">NQueensRow</span>(SearchProblem):
+    <span style="color:#008000;font-weight:bold">def</span> __init__(self, N):
+        <span style="color:#008000">super</span>(NQueensRow, self)<span style="color:#666">.</span>__init__()
+        self<span style="color:#666">.</span>N             <span style="color:#666">=</span> N
+        self<span style="color:#666">.</span>initial_state <span style="color:#666">=</span> ()
+        self<span style="color:#666">.</span>_actions      <span style="color:#666">=</span> <span style="color:#008000">range</span>(N)
+        shuffle(self<span style="color:#666">.</span>_actions) <span style="color:#408080;font-style:italic"># randomize actions</span>
 
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">actions</span>(self, s):
+        <span style="color:#ba2121">&#39;&#39;&#39;Possible actions from a state.&#39;&#39;&#39;</span>
+        <span style="color:#408080;font-style:italic"># generate every possible state then filter out invalid</span>
+        tmp <span style="color:#666">=</span> [a <span style="color:#008000;font-weight:bold">for</span> a <span style="color:#a2f;font-weight:bold">in</span> self<span style="color:#666">.</span>_actions <span style="color:#008000;font-weight:bold">if</span> self<span style="color:#666">.</span>_is_valid(self<span style="color:#666">.</span>result(s, a))]
+        shuffle(tmp) <span style="color:#408080;font-style:italic"># randomize actions at each step</span>
+        <span style="color:#008000;font-weight:bold">return</span> tmp
+
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">result</span>(self, s, a):
+        <span style="color:#ba2121">&#39;&#39;&#39;Result of applying an action to a state.&#39;&#39;&#39;</span>
+        b <span style="color:#666">=</span> <span style="color:#008000">list</span>(s)     <span style="color:#408080;font-style:italic"># make mutable to add</span>
+        b<span style="color:#666">.</span>append(a)
+        <span style="color:#008000;font-weight:bold">return</span> <span style="color:#008000">tuple</span>(b) <span style="color:#408080;font-style:italic"># needs to be immutable again to search</span>
+
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">is_goal</span>(self, state):
+        <span style="color:#ba2121">&#39;&#39;&#39;Goal: N queens on board and no queen under attack.&#39;&#39;&#39;</span>
+        <span style="color:#008000;font-weight:bold">return</span> self<span style="color:#666">.</span>N <span style="color:#666">==</span> <span style="color:#008000">len</span>(state)
+
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">heuristic</span>(self, state):
+        <span style="color:#008000;font-weight:bold">return</span> self<span style="color:#666">.</span>N <span style="color:#666">-</span> <span style="color:#008000">len</span>(state)
+
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">_is_valid</span>(self, s):
+        <span style="color:#ba2121">&#39;&#39;&#39;Check if a state is valid.&#39;&#39;&#39;</span>
+        <span style="color:#408080;font-style:italic"># valid states: any arrangement of N queens with none attacking each other</span>
+        <span style="color:#408080;font-style:italic"># check horizontal, vertical, right/left diagonals</span>
+        attacked <span style="color:#666">=</span> self<span style="color:#666">.</span>_attacked
+        <span style="color:#008000;font-weight:bold">return</span> attacked(s, (<span style="color:#666">1</span>, <span style="color:#666">1</span>)) <span style="color:#a2f;font-weight:bold">and</span> attacked(s, (<span style="color:#666">1</span>,<span style="color:#666">-</span><span style="color:#666">1</span>)) <span style="color:#a2f;font-weight:bold">and</span> \
+              attacked(s, (<span style="color:#666">0</span>, <span style="color:#666">1</span>)) <span style="color:#a2f;font-weight:bold">and</span> attacked(s, (<span style="color:#666">1</span>, <span style="color:#666">0</span>))</code></pre></div>
+<h2 id="time-comparison-of-implementations">Time comparison of implementations</h2>
+
+<p><div align="center">
 <iframe width="600" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~horigome/97.embed"></iframe>
+</div>
+<br></p>
 
+<p><div align="center">
 <iframe width="600" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~horigome/83.embed"></iframe>
+</div>
+<br></p>
 
+<p><div align="center">
 <iframe width="600" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~horigome/44.embed"></iframe>
+</div>
+<br></p>
 
 <p>For each N I sampled 4 turns and took the average of their runtimes.</p>
 
-<p>It's very difficult to say anything solid about this time comparison due to the way in which possible actions are randomized at each step of the algorithm. I can however say that by essentially adding <em>knowledge</em> to our implementation (by exploiting the problem structure) we were able to make the search go significantly faster than the most naive approach (compare NQueensSquare to NQueensRow). </p>
+<p>It&rsquo;s very difficult to say anything solid about this time comparison due to the way in which possible actions are randomized at each step of the algorithm. I can however say that by essentially adding knowledge to our implementation (by exploiting the problem structure) we were able to make the search go significantly faster than the most naive approach (compare NQueensSquare to NQueensRow).</p>
 
-<hr>
+<p>In this post we went through three different solution implementation for the N-Queen problem and saw how important representing a problem in a smart way is when running A* search. If you&rsquo;re interested in seeing more code, go get it at my Github page</p>
 
-<p><img src="http://localhost:2368/content/images/2015/10/queens-1.png" alt="">
-In this post we went through three different solution implementation for the N-Queen problem and saw how important representing a problem in a smart way is when running A* search. If you're interested in seeing more code, go get it at <a href="https://github.com/multivac61/nqueens">my Github page</a></p>
-
-<p>I'm sure there must be faster ways to solve the N Queen problem and my implementations were merely meant as an exercise in thinking about problem representation and then coding it up in Python. If you have implemented or know of a faster way to do this or have anything to add just comment below.</p>
-        </section>
-
-        <footer class="post-footer">
-
-
-
-            <section class="author">
-                <h4><a href="../author/olafur/">Olafur Bogason</a></h4>
-
-                    <p>Read <a href="../author/olafur/">more posts</a> by this author.</p>
-                <div class="author-meta">
-                    
-                    
-                </div>
-            </section>
-
-
-            <section class="share">
-                <h4>Share this post</h4>
-                <a class="icon-twitter" href="https://twitter.com/intent/tweet?text=The%20problem%20with%20N%20queens&amp;url=http://obogason.com/n_queens_problem/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
-                    <span class="hidden">Twitter</span>
-                </a>
-                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://obogason.com/n_queens_problem/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
-                    <span class="hidden">Facebook</span>
-                </a>
-                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://obogason.com/n_queens_problem/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
-                    <span class="hidden">Google+</span>
-                </a>
-            </section>
-
-
-        </footer>
+<p>I&rsquo;m sure there must be faster ways to solve the N Queen problem and my implementations were merely meant as an exercise in thinking about problem representation and then coding it up in Python. If you have implemented or know of a faster way to do this or have anything to add just comment below.</p>
 
     </article>
-</main>
+  </div>
 
-<aside class="read-next">
-    <a class="read-next-story no-cover" href="../knights_tour/">
-        <section class="post">
-            <h2>A Knight's Tour</h2>
-            <p>Another interesting problem relating to classical search in AI is the Knight's Tour.   A knight's tour is a sequence…</p>
-        </section>
-    </a>
-    <a class="read-next-story prev no-cover" href="../note-to-self/">
-        <section class="post">
-            <h2>Note to self.self: List comprehensions in Python 2.x leak!</h2>
-            <p>After considerable amount of debugging on some code I've been writing in Python 2.x I finally found the…</p>
-        </section>
-    </a>
-</aside>
+  
+  
+  
 
-
-
-        <footer class="site-footer clearfix">
-            <section class="copyright"><a href="http://obogason.com">Ólafur not Olaf</a> © 2016</section>
-            <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
-        </footer>
-
-    </div>
-
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-    <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-65029525-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
-    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=aff7cdc8fe"></script>
-    <script type="text/javascript" src="../assets/js/index.js?v=aff7cdc8fe"></script>
-
+  
 </body>
+
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hardware on multivac61.github.com</title>
+    <link>multivac61.github.io/tags/hardware/</link>
+    <description>Recent content in Hardware on multivac61.github.com</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 07 Dec 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="multivac61.github.io/tags/hardware/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Intro to modern hardware prototyping</title>
+      <link>multivac61.github.io/modern_hardware_prototyping/</link>
+      <pubDate>Wed, 07 Dec 2016 00:00:00 +0000</pubDate>
+      
+      <guid>multivac61.github.io/modern_hardware_prototyping/</guid>
+      <description>This post is a brief overview of hardware (HW) prototyping. It is meant for individuals or teams that are starting their journey into the magical forest of HW prototyping. The topic is huge and it is impossible to cover all aspects of it in a blog post. Your situation, needs and requirements will also be different from ours. This is the post I wish I had read two years ago before I finished my undergrad degree in electrical engineering.</description>
+    </item>
+    
+  </channel>
+</rss>
