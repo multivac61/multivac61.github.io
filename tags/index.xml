@@ -6,7 +6,7 @@
     <description>Recent content in Tags on multivac61.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 20 Mar 2016 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 18 Dec 2015 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,9 +14,18 @@
     <item>
       <title>Ai</title>
       <link>/tags/ai/</link>
-      <pubDate>Sun, 20 Mar 2016 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 18 Dec 2015 00:00:00 +0000</pubDate>
       
       <guid>/tags/ai/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Dsp</title>
+      <link>/tags/dsp/</link>
+      <pubDate>Sun, 20 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/dsp/</guid>
       <description></description>
     </item>
     
@@ -32,7 +41,7 @@
     <item>
       <title>Python</title>
       <link>/tags/python/</link>
-      <pubDate>Sun, 20 Mar 2016 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 18 Dec 2015 00:00:00 +0000</pubDate>
       
       <guid>/tags/python/</guid>
       <description></description>
