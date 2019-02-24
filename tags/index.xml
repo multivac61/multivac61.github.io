@@ -2,48 +2,48 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on multivac61.github.io</title>
-    <link>/tags/</link>
+    <link>https://multivac61.github.io/tags/</link>
     <description>Recent content in Tags on multivac61.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 18 Dec 2015 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://multivac61.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Ai</title>
-      <link>/tags/ai/</link>
+      <link>https://multivac61.github.io/tags/ai/</link>
       <pubDate>Fri, 18 Dec 2015 00:00:00 +0000</pubDate>
       
-      <guid>/tags/ai/</guid>
+      <guid>https://multivac61.github.io/tags/ai/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Dsp</title>
-      <link>/tags/dsp/</link>
+      <link>https://multivac61.github.io/tags/dsp/</link>
       <pubDate>Sun, 20 Mar 2016 00:00:00 +0000</pubDate>
       
-      <guid>/tags/dsp/</guid>
+      <guid>https://multivac61.github.io/tags/dsp/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Hardware</title>
-      <link>/tags/hardware/</link>
+      <link>https://multivac61.github.io/tags/hardware/</link>
       <pubDate>Wed, 07 Dec 2016 00:00:00 +0000</pubDate>
       
-      <guid>/tags/hardware/</guid>
+      <guid>https://multivac61.github.io/tags/hardware/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Python</title>
-      <link>/tags/python/</link>
+      <link>https://multivac61.github.io/tags/python/</link>
       <pubDate>Fri, 18 Dec 2015 00:00:00 +0000</pubDate>
       
-      <guid>/tags/python/</guid>
+      <guid>https://multivac61.github.io/tags/python/</guid>
       <description></description>
     </item>
     
