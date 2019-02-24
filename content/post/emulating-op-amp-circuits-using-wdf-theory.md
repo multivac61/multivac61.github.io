@@ -2,8 +2,8 @@
 title = "Digitizing analog circuits containing op amps using Wave Digital Filters"
 author = ["Olafur Bogason"]
 date = 2016-03-20
-lastmod = 2019-02-24T14:23:42+00:00
-tags = ["ai", "python"]
+lastmod = 2019-02-24T17:33:45+00:00
+tags = ["dsp"]
 categories = ["dsp"]
 draft = false
 +++
@@ -190,4 +190,4 @@ Just to give a simple demo I put a funk drum beat and put it through the Sallen-
 
 There are still many circuits that are impossible to model using state-of-the-art WDF theory. An example are circuits that have global feedback (such as the MS-20 filter). Fundamental research in the field is active at the moment and hopefully within a few years those circuits will also be able to model using WDFs.
 
-A big shout out goes to [Kurt James Werner](https://ccrma.stanford.edu/~kwerner/) for help and support down the WDF rabbit.
+A big shout out goes to [Kurt James Werner](https://ccrma.stanford.edu/~kwerner/) for help and support down the WDF rabbit hole.

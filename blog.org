@@ -874,7 +874,7 @@ In the fundamental frequency estimation literature there is a common misconcepti
 In the fundamental frequency estimation literature there is a common misconception that frequency is the same as pitch. Frequency is defined as the reciprocal of a period and has nothing to do with human perception. Pitch, however, is how we humans perceive frequency psychoacoustically.
 
 ** DSP                                                            :@dsp:
-*** Digitizing analog circuits containing op amps using Wave Digital Filters :ai:python:
+*** Digitizing analog circuits containing op amps using Wave Digital Filters :dsp:
 :PROPERTIES:
 :EXPORT_DATE: 2016-03-20
 :EXPORT_FILE_NAME: emulating-op-amp-circuits-using-wdf-theory
@@ -978,7 +978,7 @@ Just to give a simple demo I put a funk drum beat and put it through the Sallen-
 **** Final thoughts
 There are still many circuits that are impossible to model using state-of-the-art WDF theory. An example are circuits that have global feedback (such as the MS-20 filter). Fundamental research in the field is active at the moment and hopefully within a few years those circuits will also be able to model using WDFs.
 
-A big shout out goes to [[https://ccrma.stanford.edu/~kwerner/][Kurt James Werner]] for help and support down the WDF rabbit.
+A big shout out goes to [[https://ccrma.stanford.edu/~kwerner/][Kurt James Werner]] for help and support down the WDF rabbit hole.
 
 * Post Ideas                                                       :noexport:
 ** Math                                                               :@math:
