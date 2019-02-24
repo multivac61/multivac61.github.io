@@ -1,0 +1,1106 @@
+#+STARTUP: content
+#+TITLE: Olafur Bogason
+#+AUTHOR: Olafur Bogason
+#+HUGO_BASE_DIR: .
+#+HUGO_AUTO_SET_LASTMOD: t
+#+STARTUP: indent
+
+* Posts
+:PROPERTIES:
+:EXPORT_HUGO_SECTION: post
+:END:
+** General                                                        :@general:
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+*** TODO Reinit                                                     :general:
+:PROPERTIES:
+:EXPORT_DATE: 2019-02-18
+:EXPORT_HUGO_LASTMOD: 2019-02-19
+:EXPORT_FILE_NAME: reinit
+:END:
+#+BEGIN_SRC
+    ars longa, vita brevis, occasio praeceps, experimentum periculosum, iudicium difficile.
+#+END_SRC
+     
+$ e ^ {i \pi} = -1 $
+     
+** Python                                                         :@python:
+*** Note to self.self: List comprehensions in Python 2.x leak!                                                        :python:
+:PROPERTIES:
+:EXPORT_DATE: 2015-10-18
+:EXPORT_FILE_NAME: note-to-self
+:END:
+After considerable amount of debugging on some code I've been writing in Python 2.x I finally found the bug. This time it didn't arise because I was sloppy, as it so often does, but because of faulty behaviour intrinsic to the language design of Python 2.x itself..
+    
+[[/images/18-dear-liza.png]]
+    
+#+BEGIN_SRC python
+  'This is an example of list comprehension control variables being leaked to their outer scope'
+
+  for i in range(10):
+      a = [i for i in range(43)]
+      print(i) # will print 42 every time!
+#+END_SRC
+
+#+RESULTS:
+: None
+
+It's no surprise that [[http://stackoverflow.com/questions/4575698/python-list-comprehension-overriding-value][others]] have encountered this bug/feature before and it has supposedly been fixed in Python 3.x.
+
+Maybe this is a good example of why I should be switching over to Python 3.x soon...ish...
+    
+     
+*** The problem with N queens                                     :python:ai:
+:PROPERTIES:
+:EXPORT_DATE: 2015-10-21
+:EXPORT_FILE_NAME: n_queens_problem
+:END:
+
+I'm currently taking an introductory course in AI at McGill. In reality the course is not really an introductory course as it covers a broad range of theory and is extremely demanding (as in bloody hard). That being said I feel like I'm getting a good overview of the general landscape of AI, which is awesome.
+
+The course textbook we're using is AI: A Modern Approach. In a chapter about classical search the authors talk about a problem called the 8-Queens problem..
+
+/The eight queens puzzle is the problem of placing eight chess queens on an 8×8 chessboard so that no two queens threaten each other. Wikipedia/
+
+I must admit that I'm not a big chess player but I did find this to be an interesting problem in its own right. Below are a couple of implementations for solving the 8-Queens problem using the simpleai library and its built in A* search algorithm.
+
+One short remark before we continue: There's really nothing that says that we have to limit ourselves to a 8x8 board instead of a board of maybe 9x9 or 99x99 squares. So from now on I will talk about the N queens problem on a NxN board instead. Now let's look at implementations...
+    
+**** One queen at a time
+
+The first implementation is the most simple and straight forward I could come up with. The algorithm goes as follows: You start out with a blank board represented by a NxN array in python which we call our initial state. The set of actions we can do to generate a new state is to place a queen at some point (i, j) on the board where 0 <= i, j < N. You then run A* search on the initial state.
+
+At each state the algorithm will place one queen on the board and makes sure that it isn't being attacked. We keep on placing new queens on the board until the board has been filled with N queens where none of them are under attack. The heuristic I'm using is very simple: calculate how many queens we have left to place on the board at the given state, pretty simple.
+    
+#+BEGIN_SRC python
+  class NQueensSquare(SearchProblem):
+      def __init__(self, N):
+          super(NQueensSquare, self).__init__()
+          self.N = N
+          self.initial_state = tuple([tuple([0 for i in range(N)]) for j in range(N)])
+          self._actions      = [(i, j) for i in range(N) for j in range(N)]
+
+      def actions(self, s):
+          '''Possible actions from a state.'''
+          # generate every possible state then filter out invalid
+          tmp = [a for a in self._actions if self._is_valid(self.result(s, a))] 
+          shuffle(tmp)
+          return tmp
+
+      def result(self, s, a):
+          '''Result of applying an action to a state.'''
+          (i, j) = a
+          b      = list(s)    # make immutable object to place queen
+          tmp    = list(b[i])    
+          tmp[j] = 1          # place queen to square (i,j) in board
+
+          s    = list(s)      # extra steps for immutability
+          s[i] = tuple(tmp)   # required by A* search in simpleai
+          return tuple(s)
+
+      def is_goal(self, state):
+          '''Goal: N queens on board and no queen under attack.'''
+          return self._num_queens_on_board(state) == self.N
+
+      def heuristic(self, state):
+          return self.N - self._num_queens_on_board(state)
+#+END_SRC
+
+At each time the A* search generates a new state it tries out N^2 different placements of queens, in the worst case. This approach is very slow and we aren't taking advantage of the structure of the problem at all
+     
+**** All queens on board and swap
+     
+Well what about instead of starting out with an initial state that corresponds to an empty NxN board, we place N queens randomly on the board so that we have one queen in each row of the board? We would start out in a state that potentially is not valid since there is a good chance that we will have some queens attacking each other. That's just fine because we only need to swap queens on the board until we have a legal state with no queen under attack.
+     
+To generate new states we swap two queens so that the resulting state will have fewer queens under attack than the prior state. The heuristic we use is the sum of all attacks (i.e. if a queen is under attack that would result in a +2 added to the sum etc.).
+
+#+BEGIN_SRC python
+  class NQueensSwap(SearchProblem):
+      def __init__(self, N):
+          self.N = N
+          init               = [i for i in range(N)]
+          shuffle(init)   # randomize the initial array
+          self.initial_state = tuple(init)    # states must me immutable
+          self._actions      = [ (i, j) for i in range(N) 
+                                        for j in range(i,N) 
+                                            if i != j ]
+
+      def actions(self, s):
+          '''Possible actions from a state.'''
+          # generate every possible state then filter out invalid
+          tmp = [a for a in self._actions if self._is_valid(self.result(s, a))]
+          shuffle(tmp) # randomize actions at each step
+          return tmp
+
+      def result(self, s, a):
+          '''Result of applying an action to a state.'''
+          b          = list(s)     # make board mutable to swap queens
+          (i, j)     = a
+          b[i], b[j] = b[j], b[i] # swap queens
+          return tuple(b)         # make immutable again to search
+
+      def is_goal(self, state):
+          '''Goal: N queens on board and no queen under attack.'''
+          return self.heuristic(state) == 0
+
+      def heuristic(self, state):
+          # scan the state horizontally, vertically and diagonally (left & right)
+          # return the number of attacks summed for all queens
+          nattacks = self._num_attacks
+          return nattacks(state, (0, 1)) + nattacks(state, (1, 0)) + \
+              nattacks(state, (1,-1)) + nattacks(state, (1, 1))
+
+      def _is_valid(self, s):
+          '''Check if a state is valid.'''
+          # all states are valid by default
+          return True
+#+END_SRC
+
+This approach naturally sounds like a better idea than placing one queen at a time, but I would argue that we haven't started to take any real advantage of the structure of the problem. Let's go and do something about that!
+**** One row at a time
+
+We know that each row and column must have exactly one queen present. That essentially means that we don't really need to think about every single square on the board when placing a queen. Instead we can add a queen at the i-th index in a row, that is not present in the board. This brings our set of actions we can make at each state down from N^2 to N (in the worst case). That makes a huge difference in running time as we will see.
+
+This implementation works by starting out with an empty board, expressed as an empty tuple in Python. When a new state is generated we append a row containing exactly one queen, to the previous state. We can think of this as adding a queen to the row that is nearest to the top of the NxN board which contains no queen yet. The heuristics is the same we used for the previous implementation. We continue adding queens to the board, one row at a time, until the board is full and no queen is under attack.
+
+#+BEGIN_SRC python
+  class NQueensRow(SearchProblem):
+      def __init__(self, N):
+          super(NQueensRow, self).__init__()
+          self.N             = N
+          self.initial_state = ()
+          self._actions      = range(N)
+          shuffle(self._actions) # randomize actions
+
+      def actions(self, s):
+          '''Possible actions from a state.'''
+          # generate every possible state then filter out invalid
+          tmp = [a for a in self._actions if self._is_valid(self.result(s, a))]
+          shuffle(tmp) # randomize actions at each step
+          return tmp
+
+      def result(self, s, a):
+          '''Result of applying an action to a state.'''
+          b = list(s)     # make mutable to add
+          b.append(a)
+          return tuple(b) # needs to be immutable again to search
+
+      def is_goal(self, state):
+          '''Goal: N queens on board and no queen under attack.'''
+          return self.N == len(state)
+
+      def heuristic(self, state):
+          return self.N - len(state)
+
+      def _is_valid(self, s):
+          '''Check if a state is valid.'''
+          # valid states: any arrangement of N queens with none attacking each other
+          # check horizontal, vertical, right/left diagonals
+          attacked = self._attacked
+          return attacked(s, (1, 1)) and attacked(s, (1,-1)) and \
+              attacked(s, (0, 1)) and attacked(s, (1, 0))
+#+END_SRC
+     
+**** Time comparison of implementations
+     
+
+#+BEGIN_EXPORT html
+<div align="center">
+<iframe width="600" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~horigome/97.embed"></iframe>
+</div>
+<br>
+#+END_EXPORT
+
+#+BEGIN_EXPORT html
+<div align="center">
+<iframe width="600" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~horigome/83.embed"></iframe>
+</div>
+<br>
+#+END_EXPORT
+
+#+BEGIN_EXPORT html
+<div align="center">
+<iframe width="600" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~horigome/44.embed"></iframe>
+</div>
+<br>
+#+END_EXPORT
+
+For each N I sampled 4 turns and took the average of their runtimes.
+
+It's very difficult to say anything solid about this time comparison due to the way in which possible actions are randomized at each step of the algorithm. I can however say that by essentially adding knowledge to our implementation (by exploiting the problem structure) we were able to make the search go significantly faster than the most naive approach (compare NQueensSquare to NQueensRow).
+
+In this post we went through three different solution implementation for the N-Queen problem and saw how important representing a problem in a smart way is when running A* search. If you're interested in seeing more code, go get it at my Github page
+
+I'm sure there must be faster ways to solve the N Queen problem and my implementations were merely meant as an exercise in thinking about problem representation and then coding it up in Python. If you have implemented or know of a faster way to do this or have anything to add just comment below.
+*** Sorting algorithms in Python                                  :python:ai:
+:PROPERTIES:
+:EXPORT_DATE: 2015-10-03
+:EXPORT_FILE_NAME: sorting_algorithms_in_python
+:END:
+    
+Recently I've been doing some coding in Python but I felt like I didn't really understand what was going on. So as a way to better understand python's syntax and semantics I implemented a couple of the better known sorting algorithms - for fun and the greater good! 
+
+This post showcases the code I wrote and talks about the hurdles I encountered while implementing the algorithms. This post is only meant to document my learning process of Python implementations and not really meant for learning about the mathematics behind the space- and time complexities of the different sort algorithms as I had already done that in my EE undergrad. All comments about implementation issues, bugs or pythonic styling are more than welcome!
+
+#+begin_center
+[[https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/200px-Python-logo-notext.svg.png]]
+#+end_center
+ 
+**** The simpler sorts
+As a start I decided to go with the simplest looking sorts, insertion- and selection sort. They are both O(n^2) in time complexity and thus rarely ever used on large datasets. Their implementation is however straight forward. It is noteworthy to point out that I wanted each function to return a <strong>new list of numbers</strong> and that the functions shouldn't mutate the list passed in at all.
+
+***** Insertion sort
+#+begin_center
+[[https://upload.wikimedia.org/wikipedia/commons/0/0f/Insertion-sort-example-300px.gif]]
+#+end_center
+
+#+BEGIN_EXPORT html
+<blockquote>
+  <p>Insertion sort is a simple sorting algorithm that builds the final sorted array (or list) one item at a time. It is much less efficient on large lists than more advanced algorithms such as quicksort, heapsort, or merge sort. - 
+  <a href="https://en.wikipedia.org/wiki/insertion_sort" title="Wikipedia: Insertion sort">Insertion sort</a></p>
+</blockquote>
+#+END_EXPORT
+
+The search iterates through the unsorted array. Each time it passes on of its elements to an inner function insert<em>_</em>item, which takes a list and element and inserts the element in the right place (as dictated by the passed in function sort_by).
+
+The sort by function takes as a default an [[https://pythonconquerstheuniverse.wordpress.com/2011/08/29/lambda_tutorial/][lambda function]]. For those of you who haven't heard about the built-in lambda functions I encourage you to check them out. They can come in handy to build up simple functions in a lucid manner, when using def is simply too much.
+
+#+BEGIN_SRC python
+  def insertion_sort(m, sort_by=(lambda a, b: a < b)):
+      def insert_item(m, item0):
+          for i, item in enumerate(m):
+              if sort_by(item0, item):
+                  m.insert(i, item0)
+                  return
+              m.append(item0)
+
+          if len(l) <= 1:
+              return l
+
+          sorted_list = []
+          for item in l:
+              insert_item(sorted_list, item)
+          return sorted_list
+#+END_SRC
+
+#+RESULTS:
+: None
+
+***** Selection sort
+#+BEGIN_EXPORT html
+<blockquote>
+<p>The algorithm [selection sort] divides the input list into two parts: the sublist of items already sorted, which is built up from left to right at the front (left) of the list, and the sublist of items remaining to be sorted that occupy the rest of the list. - <a href="https://en.wikipedia.org/wiki/selection_sort" title="Wikipedia: Selection sort">Selection sort</a></p>
+</blockquote>
+#+END_EXPORT
+
+My implementation  starts off with the passed-in list and copies all elements from the list into a new place in memory (very important so that we don't mutate the passed in list) and assigns that object to the variable initial<em>_</em>list. Then we iterate through that list and at each passing we find the "lowest" element as dictated by the sort<em>_</em>by function as before. We then append that element on the back of our sorted<em>_</em>list object and voilá! after passing through the outer loop once we have sorted the list passed in. We then return.
+
+#+BEGIN_SRC python
+  def selection_sort(m, sort_by=(lambda a, b: a < b)):
+       def find_next(m):
+            next_elem = m[0]
+            for i in m:
+                 if sort_by(i, next_elem):
+                      next_elem = i
+            return next_elem
+
+       if len(m) <= 1:	# if list less than one element return
+            return m
+
+       initial_list = list(m)	# deepcopy of passed in list
+       sorted_list = []
+       while initial_list:
+            next_min = find_next(initial_list)	# find 
+            sorted_list.append(next_min)
+            initial_list.remove(next_min)
+
+       return sorted_list
+#+END_SRC
+
+#+RESULTS:
+: None
+
+**** The more efficient sorts
+Going on down the sorting algorithms difficulty-ladder we next encounter sorts with O(n log(n)) time-complexities. Here is where recursion comes in and the implementations begin to become more interesting and non trivial.
+
+***** Merge sort
+#+begin_center
+[[https://upload.wikimedia.org/wikipedia/commons/c/cc/Merge-sort-example-300px.gif]]
+#+end_center
+
+Conceptually, a merge sort works as follows: ([[https://en.wikipedia.org/wiki/merge_sort][Wikipedia]])
+  
+- Divide the unsorted list into n sublists, each containing 1 element (a list of 1 element is considered sorted).
+- Repeatedly merge sublists to produce new sorted sublists until there is only 1 sublist remaining. This will be the sorted list.
+
+Merge sort was invented in the time of the tape machines by the legendary mathematician Jon von Neumann.
+
+#+begin_center
+[[https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/HD.3F.191_%2811239892036%29.jpg/383px-HD.3F.191_%2811239892036%29.jpg]]
+#+end_center
+
+My implementation gets straight to the point. First we split the list into single element list and then merge those small lists recursively so that at each point the smaller sub-lists are individually sorted. The function that has the merge functionality is maintained within the merge_sort function itself for brevity and as not to dirty our global name-space.
+
+#+BEGIN_SRC python
+  def merge_sort(m, sort_by):
+      def merge(left, right):
+          result = []
+          while left and right:
+              # keep on merging/sorting from left/right
+              # lists on an element basis 
+              if sort_by(left[0], right[0]):
+                  result.append(left[0])
+                  left.pop(0)
+              else:
+                  result.append(right[0])
+                  right.pop(0)
+              # there might be elements left in left/right list
+          for i in left:
+              result.append(i)
+          for i in right:
+              result.append(i)
+          return result
+
+      if len(m) <= 1: # if list less than one element return
+          return m
+
+      middle = len(m) / 2	# split list in half
+      left = m[:middle]; right = m[middle:]
+
+      left = merge_sort(left, max_order)		# sort left
+      right = merge_sort(right, max_order)	# sort right
+
+      return merge(left, right)	# merge together sorted left/right
+#+END_SRC
+
+#+RESULTS:
+: None
+
+***** Heap sort
+#+begin_center
+[[https://upload.wikimedia.org/wikipedia/commons/1/1b/Sorting_heapsort_anim.gif]]
+#+end_center
+
+Heapsort can be thought of as an improved selection sort: like that algorithm, it divides its input into a sorted and an unsorted region, and it iteratively shrinks the unsorted region by extracting the largest element and moving that to the sorted region. The improvement consists of the use of a heap data structure rather than a linear-time search to find the maximum. [[https://en.wikipedia.org/wiki/heap_sort][Heap sort]]
+
+The abstract description of heap sort may make it seem a little daunting but it really isn't much more complex than merge sort at all. The functionality I had to implement was /heapify/, take a list and make a [[https://en.wikipedia.org/wiki/Heap_%28data_structure%29][heap data structure]] out of it and sift<em>_</em>down, a function that returns a heap into a legal state when the top element has been removed from it.
+
+My implementation goes like this: First create a heap using the /heapify/ function, basically placing each item of the list at the bottom of the heap and then sift the elements up (incorrect elements down) until the inserted element is at a place so that the heap is valid. Next I remove the top node of the heap, which we know will be the lowest/highest/which ever way you want to sort your list, place it in a new sorted<em>_</em>list and then we make the heap valid again. We continue this procedure until there are no leafs left in the heap.
+
+#+BEGIN_SRC python
+  def heap_sort(m, sort_by):
+      def sift_down(m, start, end):
+          """Repair heap whose root element is at index start
+            assuming the heaps rooted at its children are valid"""
+          root = start
+
+          while 2*root+1 <= end:
+              child = 2*root + 1	# left child
+              swap = root
+
+              if sort_by(m[swap], m[child]):
+                  swap = child	# swap if left child is 'larger'
+
+                  if child+1 <= end and sort_by(m[swap], m[child+1]):
+                      swap = child + 1 # swap if right child is 'larger'
+              if swap == root:
+                    return
+              else:
+                    m[root], m[swap] = m[swap], m[root]
+                    root = swap
+
+          def heapify(m):
+              """If A is a parent node of B then the key of node A is 
+              ordered with respect to the key of node B with the same 
+              ordering applying across the heap."""
+              start = (len(m) - 2) / 2
+
+              while start >= 0:
+                  sift_down(m, start, len(m)-1)
+                  start -= 1
+
+              m = list(m)	# deep copy
+              heapify(m)
+
+              end = len(m) - 1
+              while end > 0:
+                  m[0], m[end] = m[end], m[0]
+                  end -= 1
+                  sift_down(m, 0, end)
+
+              return m
+#+END_SRC
+
+#+RESULTS:
+: None
+
+***** Quick sort
+#+begin_center
+[[https://upload.wikimedia.org/wikipedia/commons/6/6a/Sorting_quicksort_anim.gif]]
+#+end_center
+
+Quicksort is a divide and conquer algorithm. Quicksort first divides a large array into two smaller sub-arrays: the low elements and the high elements. Quicksort can then recursively sort the sub-arrays. The steps are:
+1. Pick an element, called a pivot, from the array.
+2. Reorder the array so that all elements with values less than the pivot come before the pivot, while all elements with values greater than the pivot come after it (equal values can go either way). After this partitioning, the pivot is in its final position. This is called the partition operation.
+3. Recursively apply the above steps to the sub-array of elements with smaller values and separately to the sub-array of elements with greater values. [[https://en.wikipedia.org/wiki/quick_sort][Wikipedia]]
+
+I proceeded using a similar approach as I did in merge sort, the functions that do the heavy lifting are maintained within the quick_sort function itself. The implementation follows directly from the description on [[https://en.wikipedia.org/wiki/quick_sort][Wikipedia]] and I was lazy so I just chose the last element to always be the pivot in each sub-list that is to be sorted.
+
+#+BEGIN_SRC python
+  def quick_sort(m, sort_by):
+        def partition(m, lo, hi):
+              p = m[hi]	# choose a pivot
+              i = lo
+              for j in range(lo, hi):
+                    if sort_by(m[j], p):
+                          m[i], m[j] = m[j], m[i]
+                          i += 1
+
+              m[i], m[hi] = m[hi], m[i]
+              return i
+
+        def _quick_sort(m, lo, hi):
+              if lo < hi:
+                    p = partition(m, lo, hi)
+                    _quick_sort(m, lo, p-1)
+                    _quick_sort(m, p+1, hi)
+
+        m = list(m)	# deep copy
+        _quick_sort(m, 0, len(m)-1)
+
+        return m
+#+END_SRC
+
+#+RESULTS:
+: None
+
+One thing I noticed is that the python interpreter will throw the error ~RuntimeError: maximum recursion depth exceeded in cmp~ if the test cases I tried were too large. This doesn't mean that my implementation is buggy but simply that the interpreter has a default recursion depth which can be modified by the user. More about that [[http://stackoverflow.com/questions/25105541/python-quicksort-runtime-error-maximum-recursion-depth-exceeded-in-cmp][here.]]
+      
+**** Take aways
+These implementations were much easier than I had imagined and I didn't really have any big problems.
+
+Next up: code a Search class, implement the different algorithms there and do some testing! I also want to try and implement some of the AI search algorithms (A*, minimax &amp; alpha-beta pruning).
+
+** Hardware                                                       :@hardware:
+*** Intro to modern hardware prototyping                          :hardware:
+:PROPERTIES:
+:EXPORT_DATE: 2016-12-07
+:EXPORT_FILE_NAME: modern_hardware_prototyping
+:END:
+
+This post is a brief overview of hardware (HW) prototyping. It is meant for individuals or teams that are starting their journey into the magical forest of HW prototyping. The topic is huge and it is impossible to cover all aspects of it in a blog post. Your situation, needs and requirements will also be different from ours. This is the post I wish I had read two years ago before I finished my undergrad degree in electrical engineering..
+    
+[[/images/waves.png]]
+
+**** tl;dr
+- Learn the basic skills - circuit theory, how to solder, design PCBs and MCU programming.
+- Set up a R&D lab.
+- Get a prototype working first & iterate quickly.
+- Avoid making circuit boards at home at all cost.
+- If you speak open source you move faster.
+- Using Arduino is like drawing with crayons. It is simple and fun but you won't be making no Mona Lisa.
+
+**** First things first
+Doing HW prototyping involves a large skill set. The knowledge you need can be pretty hard to come by if you don't know where to look. Most of the skills you will have to learn on you own. Diving head-first is the only way to overcome the initial hurdles.
+
+To a total beginner I would recommend that you find a makerspace, fablab or something similar to help you with the absolute basics. In my experience you will find friendly people there who will gladly teach you how to breadboard components, solder circuits, program microcomputers, make simple enclosures etc. It is also important to get familiar with basic circuit theory. You're lucky there's plenty of [[https://www.google.com/search?q=circuit+theory][material]] online!
+
+When learning to solder, start with through-hole components and then you can move to surface mount components when you are ready. Now we have a reflow oven in our lab so we don't have to solder as much, highly recommended if you dislike soldering.
+     
+#+BEGIN_EXPORT html
+<div align="center">
+    <iframe width="560" height="400" src="https://www.youtube.com/embed/IpkkfK937mU" frameborder="0" allowfullscreen></iframe>
+</div>
+<br>
+#+END_EXPORT
+
+Studying electrical engineering surely helped when I started to dabble with hardware, but to tell you the truth most of the stuff I learned I did by doing and not being afraid of asking questions when I got stuck. Here are resources that I found helpful when starting and use regularly even today:
+     
+- [[http://reddit][reddit]] --- I have asked questions all over the place, [[http://reddit.com/r/hwstartups][/r/hwstartups]], [[http://reddit.com/r/askelectronics][/r/askelectronics]], [[http://reddit.com/r/programming][/r/programming]]. More often than not the answers there are useful and people are nice.
+- [[http://eevblog.com/forum][eevblog.com/forum]] --- Here's where the die-hard electronics nerds lay.
+
+  *Note:* Be skeptical! You need to be skeptical of everything you read online. Even if the material comes from people who are trying to help. If you are working with IC components always try to find the schematics first. We like to use [[https://octopart.com/][Octopart]] for that.
+
+  Taking time to learn the basics is very important. Failing is a crucial step in the learning process, there's nothing bad about it. /Fail often and fast and you will learn/.
+  
+**** Setting up a R&D lab 
+After learning the basics you may be ready to move quickly. So that we could iterate as quickly as possible we decided we needed to set up a R&D lab. That meant getting the adequate electronics equipment with the budget that we had, which was around $2.5k at the time. Today the lab that we run consists of the following gear:
+- Bench power supply --- Rigol DP832
+- Digital Oscilloscope --- Rigol DS1054Z
+- Voltmeter --- Extech 430
+- Soldering station --- Hakko FX951
+- Reflow oven --- Modified desktop oven with MCU inside for temperature regulation
+
+  [[/images/hardware_prototyping_setup.jpg]]
+
+  Along with this we have a large selection of tweezers, other handy tools and components. All this is necessary as you dive deeper into HW prototyping and electronics.
+  Hardware prototyping is time consuming
+
+  Developing hardware is notoriously hard, and for good reason. The steps involved are many and the learning curve is often steep. Understanding which steps you should outsource and which steps you can successfully do on your own is crucial if you want to succeed.
+
+  At first you should always find the shortest path to validate that your notion of an idea is achievable. That can mean buying individual modules of sites like [[http://adafruit.com/][Adafruit]] and breadboarding them.
+
+  Only after you have validated that the idea makes sense on a breadboard you can start to think about designing your own PCB. Note: Getting PCBs manufactured is the most time consuming step in the process of hardware prototyping phase. This you should be aware of and plan your steps so that you can use the time when the PCBs are getting manufactured for something useful.
+
+  The PCB design software that we have found most noob-friendly was CadSoft Eagle. Eagle comes in a free, open source version and the community surrounding it is very friendly to newcomers. Jeremy Blum has a wonderful series of tutorials on the subject available for free on youtube:
+
+  # Youtube video
+
+  #+BEGIN_EXPORT html
+  <div align="center">
+  <iframe width="560" height="400" src="https://www.youtube.com/embed/1AXwjZoyNno" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <br>
+  #+END_EXPORT
+
+  After you have designed and double-checked your PCB designs, you are ready to have them manufactured. DIY PCBs can be nice if you know that you only want one copy, have a single sided PCB with through-hole components and want to actively waste your time. We have wasted many, many hours on making our own PCBs at home and if you have the money I cannot overstate the importance of not doing so.
+
+  In the past we have used [[http://seeedstudio.com/][Seed Studio]] to manufacture our PCBs and we have been very happy with them so far. [[https://oshpark.com/][OSH Park]] is another manufacture of PCB that is popular with startups. To source parts we have used Mouser from day 1 and never had any problems with their service. They even offer free world-wide shipping for all orders over $100.
+
+**** Open source
+One of the biggest advantage we had as a startup was our ability to speak open source. That, more than anything else, means that you understand where to look for code and resources that may help you. [[https://github.com/][GitHub]] is a great resource for finding similar project to get inspiration for your project.
+
+Just keep in mind that some of the code you borrow may have licenses associated with it. If you do that, then you're good to go!
+
+**** Arduino as a tool
+Using the [[http://arduino.cc/][Arduino development platform]] is great for throwing together simple prototypes. It can get you a long way but recently we felt that it was holding us back. The IDE has a terrible design and more importantly the code runs slower than when you are in charge of the [[http://elinux.org/Toolchains][toolchain]] all the way from source code to flashing the firmware. The more control over your hardware you have, the more precise your outcome will be.
+
+**** Good luck!
+This was a quick post about the skills & resources you need to do hardware prototyping today. As with most things, getting good at HW prototyping takes patience and effort. Since we were able to get started, so can you.
+
+If you have any questions or have something to add to this post please don't hesitate to ask below. Thank you for reading, good luck and have fun!
+
+[[/images/hardware_prototyping_prototypes.jpg]]
+
+** AI                                                             :@ai:
+*** A Knight's Tour                                              :ai:python:
+:PROPERTIES:
+:EXPORT_DATE: 2015-10-23
+:EXPORT_FILE_NAME: knights_tour
+:END:
+    
+Another interesting problem relating to classical search in AI is the Knight's Tour.
+    
+/A knight's tour is a sequence of moves of a knight on a chessboard such that the knight visits every square only once. If the knight ends on a square that is one knight's move from the beginning square (so that it could tour the board again immediately, following the same path), the tour is closed, otherwise it is open. [[https://en.wikipedia.org/wiki/Knight's_tour][Wikipedia]]/
+
+#+begin_center
+[[https://upload.wikimedia.org/wikipedia/commons/c/ca/Knights-Tour-Animation.gif]]
+#+end_center
+    
+I implemented a solution that tries to perform a open path tour and returns a list of squares the knight has to travel to from begin to end. I found no need to use the simpleai library this time. Instead used a [[https://en.wikipedia.org/wiki/Best-first_search][greedy search]] that will always take the action that results in a state with the fewest actions possible, otherwise known as the Warnsdorf's rule. If it doesn't find a path in the first case it will simply return an error for the given N and start point.
+    
+#+BEGIN_SRC python
+  class KnightsTour():
+      '''Knights Tour using Warnsdorf's rule as heuristics'''
+
+      def __init__(self, N, start_point=(0,0)):
+          self.N             = N
+          self.initial_state = (start_point, )
+          # all relative moves expressed as displacement in 2D
+          self._actions      = [(1,2), (1,-2), (2,1), (2,-1),\
+                                (-1,2), (-1,-2), (-2,1), (-2,-1)]
+
+      def actions(self, s):
+          '''Possible actions from a state.'''
+          # generate every possible state and filter unvalid ones
+          return [a for a in self._actions if self._is_valid(self.result(s, a))]
+
+      def result(self, s, a):
+          '''Result of applying an action to a state.'''
+          last_x, last_y = s[-1]; 
+          delta_x, delta_y = a
+
+          b = list(s)     # make mutable to add next move
+          b.append((last_x+delta_x, last_y+delta_y))
+          return tuple(b) # immutable to search
+
+      def _is_valid(self, state):
+          last_s = state[-1]
+          if last_s in state[:-1]:
+              return False
+
+          for (sx, sy) in state:
+              if ( not (0 <= sx < self.N) or  not (0 <= sy < self.N) ):
+                  return False
+
+          return True
+
+      def heuristic(self, state):
+          # how many actions can be performed in given state
+          return len(self.actions(state))
+
+      def go_on_a_ride(self):
+          s = self.initial_state
+          for i in range(self.N**2-1):
+              # get all state and their respective heuristics
+              d = {i: self.heuristic(self.result(s, i)) for i in self.actions(s)}
+              a = min(d, key=d.get) # get the action that leads to a state 
+              # that has least possible actions
+              s = self.result(s, a)
+              if not s:
+                  print("Sorry no Knights tour starting from", self.start_point)
+                  return
+              self.print_board(s)
+
+      def print_board(self, s):
+          board = s
+          N     = self.N
+          for i in range(N):
+              for j in range(N):
+                  if (i,j) in board:
+                      print("%3s" % s.index((i,j)), end='')
+                  else:
+                      print('.', end='')
+                      print('')
+
+  ## Define the size of board NxN and the start point
+  problem = KnightsTour(N=8, start_point=(0,0))
+  problem.go_on_a_ride()
+#+END_SRC
+
+#+RESULTS:
+: None
+    
+*** Fundamental frequency estimation and supervised learning     :ai:python:dsp:
+:PROPERTIES:
+:EXPORT_DATE: 2015-12-18
+:EXPORT_FILE_NAME: fundamental-frequency-estimation-and-machine-learning
+:END:
+
+/This post is a report on a final project I did in a music technology graduate seminar, [[http://www.music.mcgill.ca/~depalle/MUMT605.html][MUMT-605]], offered at McGill in the fall of 2015./
+
+**** Fundamental frequency estimation
+
+Fundamental frequency (f0) estimation (sometimes also called pitch detection, see Appendix A) has been an [[http://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&queryText=Fundamental%20frequency%20estimation][active topic]] of research within the field of audio signal processing for many years. Currently there exist literally hundreds of estimation methods that most do fairly well when the sound source is monophonic and noiseless but tend to differ greatly in accuracy when applied in less ideal situations [1, 4].
+
+Given adequate data and labels [[https://en.wikipedia.org/wiki/Supervised_learning][supervised learning]] is a very interesting method to explore in the context of fundamental frequency estimation as it has the potential to combine the information gained from individual methods and use it to come up with a more precise estimate. It could learn which methods to trust under certain circumstances and which not to and then use the model that has been learned when it is predicting output frequencies for inputs that it hasn't seen before.
+
+In this post I will discuss five f0 methods and their individual strengths and weaknesses. From there on I briefly introduce supervised machine learning and mention how concepts therein could be used to augment the performance of current estimation methods. I conclude with a case study.
+
+**** Estimation methods
+
+Fundamental frequency estimators can be split roughly into two categories: time domain based estimators (looking at the incoming waveform) and frequency domain based estimators (looking at the frequency spectrum) or sometimes the methods used are a [[https://en.wikipedia.org/wiki/Pitch_detection_algorithm#Spectral.2Ftemporal_approaches][combination of methods]] from both categories. Some authors also mention yet another category, probabilistic methods [1,5,11], but they are, not surprisingly, always a member of either or both time- or frequency domain categories.
+
+Methods in both categories have their advantages and disadvantages. The time domain based estimators are exceedingly simple to understand and implement and are computationally cheap [1]. They however lack robustness when noise or polyphonic sounds are present in the input signal. The more up to date time domain estimators have been augmented to bring performance closer to human assessment of pitch [6,7,8]. On the other hand frequency domain methods tend to show more resilience to noise and some can even be used for polyphonic fundamental frequency estimation [8,9]. Frequency domain methods tend to be mathematically more involved and also computationally heavier than time-domain methods.
+
+It is outside the scope of this report to give a thorough explanation of all fundamental frequency estimators. I will limit myself to a brief summary of five well known fundamental frequency estimation methods. Two of them, counting zero crossings and autocorrelation belong to the time domain category and the remaining methods belong to the frequency-domain category.
+
+**** Time domain based estimators
+***** Zero-crossing rate (ZCR)
+Using the fact that fundamental frequency is the reciprocal of the longest repeating period in a signal we can count the times a signal crosses the time axis. The zero crossing patterns that emerge can then be used to estimate f0, that is we can count rising- or falling edge crossings and use the rate at which they occur to estimate the fundamental frequency.
+
+#+begin_center
+[[/images/ZCR.png]]
+#+end_center
+
+ZCR is computationally inexpensive and can be implemented in O(N) [[https://en.wikipedia.org/wiki/Big_O_notation][time complexity]]. It tends to do poorly when the signal has additional high-frequency components (as many real world signals do) because then there can exist multiple zero crossings per cycle. The effects of the high-frequency components can be mitigated by pre-processing the signal before applying the algorithm. This method is thus very sensitive to noise and fluctuations in instantaneous frequency [1].
+
+#+BEGIN_SRC python
+  def freq_from_ZCR(sig, fs):
+      # Find all indices right before a rising-edge zero crossing
+      indices = find((sig[1:] >= 0) & (sig[:-1] < 0))
+
+      crossings = interpolate(indices, sig)
+
+      return fs / np.mean(np.diff(crossings))
+#+END_SRC
+
+***** Autocorrelation (AC)
+Autocorrelation (AC) is a function of of how similar a signal is to a delayed version of itself [11]. Figuring out the position of the first peak in the AC (the shortest time lag where the signal repeats) can be used to estimate the period of the incoming wave.
+
+#+begin_center
+[[/images/AC.png]]
+#+end_center
+
+AC can be computed at [[https://en.wikipedia.org/wiki/Autocorrelation#Efficient_computation][O(N log(N))]] and is a great method for finding the fundamental even when the incoming signal has strong harmonics, a [[https://en.wikipedia.org/wiki/Missing_fundamental][missing fundamental]] or contains noise [6]. One drawback of the AC method is that it may erroneously choose a peak relating to a higher-order partial instead of the fundamental frequency. A method called YIN [7] was developed in 2002 to enhance the performance of AC and is now more commonly used than AC.
+
+#+BEGIN_SRC python
+  def freq_from_AC(sig, fs):
+      corr = np.correlate(sig, sig, mode='full')
+      corr = corr[corr.size/2:]
+    
+      # Find the first low point
+      d = diff(corr)
+
+      # first point with pos. 
+      start = find(d > 0)
+
+      # Find first peak after first low point
+      peak = argmax(corr[start:-2]) + start
+      crossings = interpolate(corr, peak)
+
+      return fs / px
+#+END_SRC
+
+**** Frequency domain based estimators
+***** Finding global peak in FFT (FFT):
+FFT is applied to a windowed input signal and the frequency bin containing the most energy is used to find the peak frequency. Some sort of of [[https://en.wikipedia.org/wiki/Linear_interpolation][interpolation]] can also be used to get more precise result.
+
+#+begin_center
+[[/images/fft.png]]
+#+end_center
+
+FFT can yield poor results when the fundamental frequency does not fall in a frequency bin which has the highest energy or is not present at all.
+#+BEGIN_SRC python
+  def freq_from_FFT(sig, fs):
+      # Compute Fourier transform of windowed signal
+      N = len(sig)
+      windowed = sig * blackmanharris(N)
+      X = np.abs(np.fft.rfft(windowed))
+    
+      # Find the peak and interpolate
+      i = np.argmax(abs(X)) # Just use this for less-accurate, naive version
+      X[X == 0] = epsilon   # Circumvent division by 0
+
+      true_i = interpolate(X, i)[0]
+    
+      return fs * true_i / N
+#+END_SRC
+
+***** Harmonic product spectrum (HPS):
+A method based around the fact that many real world signals have frequency harmonics (the sinusoids above the fundamental) located at some real value multiple of the fundamental frequency. The frequency spectrum is found and under-sampled at integer values. These spectrums are then multiplied together. The frequency bin containing the peak of the multiplied signal is estimated to be the fundamental frequency, which makes sense since higher frequency harmonics are often in linear relationship with the fundamental frequency. For a better explanation please refer to [[http://cnx.org/contents/i5AAkZCP@2/Pitch-Detection-Algorithms]].
+
+#+begin_center
+[[/images/hps.png]]
+#+end_center
+
+HPS works well for signals where there harmonics are in some linear relationship with the fundamental and can be implemented to perform in O(N log(N)) time. One shortcoming of this approach is that we have to know before hand approximately how many harmonic partials are in the input signal (how many times we should undersample the spectrum). If the signal contains a lot of low frequency noise, that can also distort the estimation.
+#+BEGIN_SRC python
+  def freq_from_HPS(sig, fs):
+      N = len(sig)
+      windowed = sig * blackmanharris(N)
+      X = np.abs(rfft(windowed))
+    
+      hps = X
+      n_harmonic_partials = 6
+      for h in range(2, n_harmonic_partials):
+          # downsample the spectra
+          dec = scipy.signal.decimate(X, h)
+          hps[:len(dec)] *= dec
+    
+      # Find the peak and interpolate to get a more accurate peak
+      i_peak = np.argmax(hps[:len(dec)])
+      i_interp = interpolate(hps, i_peak)[0]
+    
+      return fs * i_interp / N # Hz
+#+END_SRC
+
+***** Cepstrum (CEPS):
+First the complex [[https://en.wikipedia.org/wiki/Cepstrum][cepstrum]] is calculated and then the sample corresponding to a peak within a sub-interval which is chosen so that it should contain the fundamental frequency. The location of the peak within the interval is then used to estimate the fundamental frequency. The clarinet for example has a frequency range of approx. 125Hz - 2K so at a sampling frequency of 44.1kHz we should search for the peak within the interval [22, 353] samples.
+
+#+begin_center
+[[/images/cepstrum.png]]
+#+end_center
+
+I found that CEPS works very well when the fundamental is low (440 Hz or lower in the case of the clarinet) but typically underestimates the fundamental when the incoming signal has higher frequency (800 Hz or higher in the case of the clarinet) [2].
+
+#+BEGIN_SRC python
+  def freq_from_CEPS(sig, fs):  
+      N = len(sig)
+      windowed = sig * blackmanharris(N)
+
+      spectrum = np.fft.rfft(windowed, fs) 
+      spectrum[spectrum == 0] = EPSILON
+      log_spectrum = np.log(np.abs(spectrum))
+      ceps = np.fft.irfft(log_spectrum)
+
+      start = int(fs / HIGH_FREQ)
+      end   = int(fs / LOW_FREQ)
+      i_peak   = np.argmax(ceps[start:end])
+      i_interp = interpolate(ceps[start:end+1], i_peak)[0]
+      return fs / (i_interp + start)
+#+END_SRC
+
+**** Preprocessing the input signal
+
+Most of the algorithms above will benefit from some kind of preprocessing of input signal. I found it to be beneficial to bandpass the input signals at cutoff-frequencies lower/higher than the highest/lowest note I wanted to be able to estimate. This process got rid of DC components and high-frequency noise which some methods are very sensitive to (i.e. ZCR). The only method that may suffer from bandpass filtering is HPS as it bases its estimation on high frequency harmonics. Other form of preprocessing include other kinds of filtering or smoothing of the signal.
+
+**** Supervised learning
+
+In short [[https://en.wikipedia.org/wiki/Supervised_learning][supervised learning]] can be described as following: we provide the algorithm with some training data in the form of a feature vector (input data) and target vector (labelled output to given input data). The algorithm then "analyses the training data and produces an inferred function, which can be used for mapping new examples." [10] The mapping can be discrete and then the algorithm is called classification, or continuous, as in the case of frequency, and then the algorithm is referred to as regression.
+
+**** Case study
+As an example of applying supervised learning to a setting within fundamental frequency estimation I decided to try to estimate the fundamental of monophonic signals from musical instruments.
+
+The data for the case study I got from [[http://theremin.music.uiowa.edu/MIS.html][University of Iowa, Musical Instrument Samples webpage]]. The site contains a database of recordings of numerous musical instruments. The recordings I used contained single notes of the [[https://en.wikipedia.org/wiki/Chromatic_scale][chromatic scale]] played on various musical instruments. Conveniently the recordings have a ground truth (or so we will assume) frequency in their filenames.
+
+I am not an expert on machine learning and so the underlying algorithms I will assume to be black boxes. After searching around I experimented with two regression methods from the [[http://scikit-learn.org/stable/index.html][scikit-learn]] [3] python package. The first approach I tried was a [[https://en.wikipedia.org/wiki/Bayesian_linear_regression][Bayesian linear regression]] (BLR) and the second one was a [[https://en.wikipedia.org/wiki/Support_vector_machine][support vector machine]] along with a [[https://en.wikipedia.org/wiki/Radial_basis_function_kernel][Radial basis function kernel]] (SVR). I chose these two because they offer example of linear- (BLR) and non-linear (SVR) regression and I wanted to see how the two approaches performed.
+
+I implemented the algorithms explained earlier in python, building on the code snippet found [[https://gist.github.com/endolith/255291][here]]. I then iterated through the various signals using a window size of 2048 samples, applying the algorithms on these samples and then saving the estimated frequencies in a feature vector as well as the target frequency which I extracted from the filenames.
+
+Using the scikit-learn package I trained both of the regression models with about 5/6 of the data I had gathered. I then used the remaining data to predict the fundamental frequency on a couple of individual instruments and also all of them together. Finally I calculated the RMS value for each method with respect to the ground truth frequency given in the filenames.
+
+#+begin_center
+[[/images/all.png]]
+[[/images/TenorTrombone-ff-stereo-4.png]]
+[[/images/Xylophone-hardrubber-ff-stereo-2.png]]
+[[/images/Violin-arco-ff-sulG-stereo-2.png]]
+[[/images/EbClarinet-ff-stereo-4.png]]
+[[/images/bells-plastic-ff-stereo-1.png]]
+[[/images/bells-plastic-ff-stereo-no_prep.png]]
+#+end_center
+**** Results and possible improvements
+It should be noted that the quality of the methods are all dependent on how well the frequency of the original signal was labelled. Often, many of the algorithms I implemented agreed on a frequency within ~2 Hz of relative error whereas the target frequency was way off. Since there exist no silver bullet estimation method for f0 estimation, generating accurate labels could be bothersome and difficult (i.e. doing it by hand) which is the biggest drawback for the supervised learning method. Gross error might also give a more meaningful estimate of relative error than RMS.
+
+A short glance over the bar graphs suggests that the BLR or SVR methods perform with the least RMS error for all methods except the "bells.plastic.ff.stereo" group of signals. The advantages and disadvantages of the estimation methods are also visible when comparing the graphs. For the signal groups which have most of their energy in the fundamental frequency such as "bells.plastic.ff.stereo" and "Xylophone.hardrubber.ff.stereo" which can be though of as simply exponentially decaying sinusoids (see "bells.plastic.ff.A5.stereo.wav" wavefrom graph).
+
+#+begin_center
+[[/images/bells.png]]
+#+end_center
+The group of signals where the time-domain methods tend to do well all have waveform that have very clear zero-crossings, such as is the case in the "TenorTrombone.ff.A3.stereo.wav" waveform. It came as no surprise that when a group of signals that don't have complex spectra but most of the energy contained in the fundamental frequency both HPS and CEPS methods perform much worse than for signals with complex frequency spectra.
+
+#+begin_center
+[[/images/trombone.png]]
+#+end_center
+
+The regression methods I used are only two of a myriad of methods that exist within the vast field of supervised learning. It would be very interesting to do more research on the methods that exists such as [[https://en.wikipedia.org/wiki/Random_forest][random forest]]. It would also be interesting to experiment with other feature spaces, not just the output of the f0 estimators. An example could be the number of zero crossings per M samples.
+
+**** References
+In the fundamental frequency estimation literature there is a common misconception that frequency is the same as pitch. Frequency is defined as the reciprocal of a period and has nothing to do with human perception. Pitch, however, is how we humans perceive frequency psychoacoustically.
+
+- [1] D. Gerhard. Pitch Extraction and Fundamental Frequency: History and Current Techniques, technical report, Dept. of Computer Science, University of Regina, 2003. 
+- [2] G. Middleton. Pitch Detection Algorithms, online resource from Connexions. Downloaded from [http://cnx.org/contents/i5AAkZCP@2/Pitch-Detection-Algorithms](http://cnx.org/contents/i5AAkZCP@2/Pitch-Detection-Algorithms) on December 10th 2015.
+- [3] Scikit-learn: Machine Learning in Python, Pedregosa et al., JMLR 12, pp. 2825-2830, 2011.
+- [4] P. Cuadra. Pitch Detection Methods Review. Downloaded from https://ccrma.stanford.edu/~pdelac/154/m154paper.htm on December 11th 2015.
+- [5] S. Brown. General Acoustics - Frequency Range of Vocals and Musical Instruments. Downloaded from http://www.listenhear.co.uk/general_acoustics.htm on December 16th 2015.
+- [6] Hajime Sano and B. Keith Jenkins. A neural network model for pitch perception. /Computer Music Journal/, 13(3):41-48, Fall 1989
+- [7] A. de Cheveigné and H. Kawahara. YIN, a fundamental frequency estimator for speech and music. /The Journal of the Acoustical Society of America/, 111:1917, 2002.
+- [8] S. Kraft, U. Zölzer. Polyphonic Pitch Detection by Iterative Analysis of the Autocorrelation Function. /DAFx-14, Erlangen, Germany, September 1-5, 2014/.
+- [9] R. Toy, R. Kailath. ESPRIT - Estimation of Signal Parameters Via Rotational Invariance Techniques. /IEEE Transactions of Acoustics, Speech and Signal Processing. Vol. 37, No. 7, July 1989/.
+- [10] Wikipedia contributors. "Supervised learning". Wikipedia, The Free Encyclopedia. Wikipedia, The Free Encyclopedia, 28 Oct. 2015. Web. 17 Dec. 2015.
+- [11] A. Röbel. Fundamental frequency estimation. /Summer 2006 lecture on analysis, modeling and transformation of audio signal/. Downloaded from http://recherche.ircam.fr/anasyn/roebel/amt_audiosignale/VL5.pdf on December 13th 2015.
+**** Appendix
+In the fundamental frequency estimation literature there is a common misconception that frequency is the same as pitch. Frequency is defined as the reciprocal of a period and has nothing to do with human perception. Pitch, however, is how we humans perceive frequency psychoacoustically.
+
+** DSP                                                            :@dsp:
+*** Digitizing analog circuits containing op amps using Wave Digital Filters :ai:python:
+:PROPERTIES:
+:EXPORT_DATE: 2016-03-20
+:EXPORT_FILE_NAME: emulating-op-amp-circuits-using-wdf-theory
+:END:
+
+In this post I will share some work I have been doing on Wave Digital Filters, or WDFs for short. WDFs allows one to digitize analog reference circuits in a way that retains the underlying topology, has nice numerical properties, allows for breaking up of annoying delay-free loops when digitizing and has a very nice modular way of dealing with non-linearities. I will not explain the basic WDF theory here but if you are interested the [[http://www.eit.lth.se/fileadmin/eit/courses/eit085f/Fettweis_Wave_Digital_Filters_Theory_and_Practice_IEEE_Proc_1986_-_This_is_a_real_challange.pdf][omnipotent paper]] on the subject written by Fettweis, the creator of WDF, or [[https://ccrma.stanford.edu/~dtyeh/papers/wdftutorial.pdf][this tutorial]] on WDF should get you familiar with the topic.
+
+Until very recently the WDF formalism has only worked on reference circuits that can be decomposed into parallel or series sub-circuits. Since many circuits in the wild have much more complicated topologies, the scope of reference circuits available for digital modelling using WDF has been very limited. Late last year there was a paper published called [[https://www.ntnu.edu/documents/1001201110/1266017954/DAFx-15_submission_53.pdf/a559ce90-d16b-49a3-a267-5b877d7fe70b][Wave Digital Filter Adaptors for Arbitraty Topologies and Multiport Linear Elements]]. In it this issue was addressed by showing how arbitrary topologies may be handled within the WDF formalism. That was achieved by some cleaver usage of the ubiquitous [[https://en.wikipedia.org/wiki/Modified_nodal_analysis][MNA method]]. In essence the method starts out with a reference circuit, extracts all series/parallel sub-circuits and uses the MNA method on the remaining components and connections. The trick is to allow active elements to clump up inside the non series/parallel adaptors, commonly known as R-type (rigid) adaptors and then figure out how the outcoming waves depend on the incoming ones (scattering matrix).
+
+Now I will give two examples of how to use this new method on circuits previously unobtainable under the WDF formalism. To warm up I will start off by coming up with a WDF structure for the [[https://en.wikipedia.org/wiki/Buffer_amplifier][buffer amplifier]].
+
+**** Op amp buffer circuit
+
+Following the steps developed in Wave Digital Filter Adaptors for Arbitraty Topologies.. I start out with a reference circuit, then approximate the op amp using a simple op amp model. I use a infinitely large resistor between the input poles so that I can use it when adapting for the port facing the voltage source (the only non-linear element that needs adapting).
+
+#+begin_center
+[[/images/wdf_buffer1.png]]
+[[/images/wdf_buffer2.png]]
+[[/images/wdf_buffer1_approx.png]]
+#+end_center
+
+The next step is to form a so called replacement graph and find split components within it. The series/parallel adaptors that I find I remove from the graph and the remaining connections will fall inside the R-type adaptor we have to derive (it is impossible to further decompose the connections into more series/parallel connectors).
+
+#+begin_center
+[[/images/wdf_buffer3.png]]
+#+end_center
+
+Now that we have the two WDF adaptors (series S, and a rigid one R) found in the approximated reference circuit we can find how incoming/outgoing waves are reflected when they reach the R-type adaptor. We do that by finding the scattering matrix which is obtainable by using [[http://www.swarthmore.edu/NatSci/echeeve1/Ref/mna/MNA5.html][Modified Nodal Analysis]]. I chose to adapt the scattering matrix to the input voltage source instead of using a resistive voltage source for simplicity's sake.
+
+#+begin_center
+[[/images/wdf_buffer4.png]]
+#+end_center
+
+This is the underlying WDF structure.
+
+#+begin_center
+[[/images/wdf_buffer5.png]]
+#+end_center
+
+Place a voltage source and resistor on all ports and then populate the MNA matrix.
+#+begin_center
+[[/images/wdf_buffer6.png]]
+#+end_center
+
+Modified Nodal Analysis matrix which we can use to figure out the scattering matrix.
+#+begin_center
+[[/images/wdf_buffer7.png]]
+#+end_center
+
+Here is the SPQR tree that indicates how the computation of the WDF structure can be done. In each iteration the waves travel from the lowest part of the tree all the way to the top and then back after the input signal has been injected.
+***** Software implementation
+
+Next I implemented the WDF model in Matlab code along with a simple LTspice simulation. Then I plotted the frequency response..
+#+begin_center
+[[/images/wdf_volt_follower.png]]
+#+end_center
+
+As expected the buffer circuit holds the input at unity for all frequencies and the frequency response is visually not different from the ground truth LTspice simulation.
+**** Sallen-Key low pass filter
+
+Next I move on to a bit more interesting reference circuit, the [[https://en.wikipedia.org/wiki/Sallen%E2%80%93Key_topology#Application:_Low-pass_filter][lowpass Sallen-Key filter]]. The steps are exactly the same as above.
+#+begin_center
+[[/images/wdf_sk1.png]]
+#+end_center
+
+We start out with a reference circuit..
+#+begin_center
+[[/images/wdf_sk2.png]]
+#+end_center
+
+Approximate the op amp like before..
+#+begin_center
+[[/images/wdf_sk_spqr.png]]
+#+end_center
+
+Generate the reference graph and find split components (again one series and one R-type adaptor)...
+#+begin_center
+[[/images/wdf_sk5.png]]
+[[/images/wdf_sk4.png]]
+[[/images/wdf_buffer6-1.png]]
+#+end_center
+
+Populate the MNA matrix and write out the SPQR tree.
+#+begin_center
+[[/images/wdf_sk3.png]]
+#+end_center
+
+***** Software implementation
+Again I coded up the WDF strucute and compared its frequency response with frequency response coming from LTspice.
+#+begin_center
+[[/images/wdf_sallen_key_lp.png]]
+#+end_center
+**** Demos
+
+Just to give a simple demo I put a funk drum beat and put it through the Sallen-Key lowpass filter WDF structure with a cutoff frequency of ~1 kHz.
+#+BEGIN_EXPORT html
+<br>
+<iframe width="100%" height="450" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/207645541&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>
+#+END_EXPORT
+
+**** Final thoughts
+There are still many circuits that are impossible to model using state-of-the-art WDF theory. An example are circuits that have global feedback (such as the MS-20 filter). Fundamental research in the field is active at the moment and hopefully within a few years those circuits will also be able to model using WDFs.
+
+A big shout out goes to [[https://ccrma.stanford.edu/~kwerner/][Kurt James Werner]] for help and support down the WDF rabbit.
+
+* Post Ideas                                                       :noexport:
+** Math                                                               :@math:
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+*** TODO Math                                                     :math:rust:
+:PROPERTIES:
+:EXPORT_DATE: 2019-02-07
+:EXPORT_FILE_NAME: math
+:END:
+
+I'm working on getting MathJax to work too! 
+
+$x^2 = y \pi^2$
+    
+$$ x^2 = y \pi^2$$
+    
+If $a^2=b$ and \( b=2 \), then the solution must be either
+$$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \]
+    
+This is text $$x = y$$
+\begin{equation*}
+  \label{eq:1}
+  C = W\log_{2} (1+\mathrm{SNR})
+\end{equation*}
+
+Ég get meira að segja talað á íslensku líka!
+    
+** Rust                                                               :@rust:
+*** Rust source                                                        :rust:
+:PROPERTIES:
+:EXPORT_DATE: 2019-02-04
+:EXPORT_FILE_NAME: rust-src
+:END:
+
+I've recently assembled a workflow for blogging with [[https://gohugo.io/][Hugo]], [[http://orgmode.org/][org-mode]], and
+[[https://www.netlify.com/][Netlify]] via a single ~.org~ document, with live reload during writing and ~git
+push~ driven deployments.
+    
+Hello, world! I'm ready to be at awe! This is fucking great...
+    
+I would hope so.
+    
+Save and update...
+
+<!--more-->
+    
+#+BEGIN_SRC rust
+  fn main() {
+      let x = 32;
+      42
+  }
+#+END_SRC
+    
+#+BEGIN_SRC rust
+  fn load_cache(path: u32) -> Result<u32, Box<Error>> {
+      let data = try {
+          // Question marks here exit only the try block, not the function
+          let mut f = File::open(path)?;
+          let mut bytes = Vec::new();
+          f.read_to_end(&mut bytes)?;
+          bytes
+      };
+      let cache = match data {
+          // But this question mark exits the function
+          Ok(data) => Cache::from_data(data)?;
+          Err(_) => {
+              warn!("Couldn't read cache, using an empty one instead");
+              Cache::default()
+          }
+      };
+      Ok(42)
+  }
+#+END_SRC
+     
+*** Rust post 2                                                        :rust:
+:PROPERTIES:
+:EXPORT_DATE: 2019-02-04
+:EXPORT_FILE_NAME: rust-src2
+:END:
+
+I've recently assembled a workflow for blogging with [[https://gohugo.io/][Hugo]], [[http://orgmode.org/][org-mode]], and
+[[https://www.netlify.com/][Netlify]] via a single ~.org~ document, with live reload during writing and ~git
+push~ driven deployments.
+    
+Hello, world! I'm ready to be at awe! This is fucking great...
+    
+Save and update...
+
+<!--more-->
+    
+#+BEGIN_SRC rust
+  fn main() {
+      let x = 32;
+      42
+  }
+#+END_SRC
+    
+#+BEGIN_SRC rust
+  fn load_cache(path: u32) -> Result<u32, Box<Error>> {
+      let data = try {
+          // Question marks here exit only the try block, not the function
+          let mut f = File::open(path)?;
+          let mut bytes = Vec::new();
+          f.read_to_end(&mut bytes)?;
+          bytes
+      };
+      let cache = match data {
+          // But this question mark exits the function
+          Ok(data) => Cache::from_data(data)?;
+          Err(_) => {
+              warn!("Couldn't read cache, using an empty one instead");
+              Cache::default()
+          }
+      };
+      Ok(42)
+  }
+#+END_SRC
+     
+* Footnotes
+* COMMENT Local Variables                          :ARCHIVE:
+# Local Variables:
+# eval: (org-hugo-auto-export-mode)
+# End:

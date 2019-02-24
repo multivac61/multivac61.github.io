@@ -1,0 +1,14 @@
+{{- define "main" -}}
+
+<!-- {{ $homepage := "bogason.is this" }}
+     {{ with .Site.Menus.nav }}
+     {{ range first 1 . }}
+     {{ $homepage = .Name }}
+     {{ end }}
+     {{ end }}
+
+     <h1>{{ $homepage }}</h1>
+-->
+{{ partial "post-list" . }}
+
+{{- end -}}

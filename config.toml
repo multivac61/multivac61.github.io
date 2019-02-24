@@ -1,0 +1,49 @@
+baseURL = "multivac61.github.io"
+languageCode = "en-us"
+title = "multivac61.github.com"
+theme = "minimal-bootstrap-hugo-theme"
+pygmentsCodefences = true
+pygmentsCodefencesGuessSyntax = true
+pygmentsStyle = "pygments"
+
+[taxonomies]
+  tag = "tags"
+
+[permalinks]
+  post = "/:filename/"
+
+[params]
+  description = ""
+  contentBackgroundColor = "#fff"
+  contentTextColor = "#212529"
+  contentLinkColor = "#007bff"
+  contentLinkHoverColor = "#0056b3"
+  navbarBackgroundColor = "#ffffff"
+  navbarLinkColor = "rgba(255, 255, 255, 0.75)"
+  navbarLinkHoverColor = "rgba(255, 255, 255, 1)"
+  wrapperMaxWidth = "800px"
+  customDateFormat = "Jan 2, 2006"
+  customCodeStyle = false
+  customBlockquoteStyle = false
+  showPostSummary = false
+  googleAnalytics = ""
+  cookieConsent = false
+  includeBootstrapJs = false
+
+# [menu]
+#   [[menu.nav]]
+#   name = "Posts"
+#   url = "/"
+#   weight = 1
+#   # [[menu.nav]]
+  # name = "Tags"
+  # url = "/tags/"
+  # weight = 2
+  # [[menu.nav]]
+  # name = "About"
+  # url = "/about/"
+  # weight = 3
+  # [[menu.nav]]
+  # name = "RSS"
+  # url = "/index.xml"
+  # weight = 4
