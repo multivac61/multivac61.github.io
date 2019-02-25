@@ -29,21 +29,3 @@ pygmentsStyle = "pygments"
   googleAnalytics = "UA-65029525-1"
   cookieConsent = false
   includeBootstrapJs = false
-
-# [menu]
-#   [[menu.nav]]
-#   name = "Posts"
-#   url = "/"
-#   weight = 1
-#   # [[menu.nav]]
-  # name = "Tags"
-  # url = "/tags/"
-  # weight = 2
-  # [[menu.nav]]
-  # name = "About"
-  # url = "/about/"
-  # weight = 3
-  # [[menu.nav]]
-  # name = "RSS"
-  # url = "/index.xml"
-  # weight = 4
