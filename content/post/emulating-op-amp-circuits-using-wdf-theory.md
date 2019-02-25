@@ -2,7 +2,7 @@
 title = "Digitizing analog circuits containing op amps using Wave Digital Filters"
 author = ["Olafur Bogason"]
 date = 2016-03-20
-lastmod = 2019-02-24T17:33:45+00:00
+lastmod = 2019-02-24T17:45:43+00:00
 tags = ["dsp"]
 categories = ["dsp"]
 draft = false

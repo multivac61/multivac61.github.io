@@ -2,7 +2,7 @@
 title = "The problem with N queens"
 author = ["Olafur Bogason"]
 date = 2015-10-21
-lastmod = 2019-02-19T10:03:17+00:00
+lastmod = 2019-02-24T17:46:10+00:00
 tags = ["python", "ai"]
 categories = ["python"]
 draft = false
@@ -17,8 +17,6 @@ _The eight queens puzzle is the problem of placing eight chess queens on an 8×8
 I must admit that I'm not a big chess player but I did find this to be an interesting problem in its own right. Below are a couple of implementations for solving the 8-Queens problem using the simpleai library and its built in A\* search algorithm.
 
 One short remark before we continue: There's really nothing that says that we have to limit ourselves to a 8x8 board instead of a board of maybe 9x9 or 99x99 squares. So from now on I will talk about the N queens problem on a NxN board instead. Now let's look at implementations...
-
-Hallo Danni..
 
 
 ## One queen at a time {#one-queen-at-a-time}
@@ -156,7 +154,7 @@ class NQueensRow(SearchProblem):
         # check horizontal, vertical, right/left diagonals
         attacked = self._attacked
         return attacked(s, (1, 1)) and attacked(s, (1,-1)) and \
-              attacked(s, (0, 1)) and attacked(s, (1, 0))
+            attacked(s, (0, 1)) and attacked(s, (1, 0))
 ```
 
 

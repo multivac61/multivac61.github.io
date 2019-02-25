@@ -2,7 +2,7 @@
 title = "Note to self.self: List comprehensions in Python 2.x leak!"
 author = ["Olafur Bogason"]
 date = 2015-10-18
-lastmod = 2019-02-24T13:07:37+00:00
+lastmod = 2019-02-24T17:46:24+00:00
 tags = ["python"]
 categories = ["python"]
 draft = false

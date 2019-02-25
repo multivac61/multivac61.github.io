@@ -2,7 +2,7 @@
 title = "Sorting algorithms in Python"
 author = ["Olafur Bogason"]
 date = 2015-10-03
-lastmod = 2019-02-24T13:06:37+00:00
+lastmod = 2019-02-24T17:46:55+00:00
 tags = ["python", "ai"]
 categories = ["python"]
 draft = false
