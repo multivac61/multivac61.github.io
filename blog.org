@@ -50,7 +50,7 @@ It's no surprise that [[http://stackoverflow.com/questions/4575698/python-list-c
 
 Maybe this is a good example of why I should be switching over to Python 3.x soon...ish...
     
-     
+
 *** The problem with N queens                                     :python:ai:
 :PROPERTIES:
 :EXPORT_DATE: 2015-10-21
@@ -978,7 +978,7 @@ Just to give a simple demo I put a funk drum beat and put it through the Sallen-
 **** Final thoughts
 There are still many circuits that are impossible to model using state-of-the-art WDF theory. An example are circuits that have global feedback (such as the MS-20 filter). Fundamental research in the field is active at the moment and hopefully within a few years those circuits will also be able to model using WDFs.
 
-A big shout out goes to [[https://ccrma.stanford.edu/~kwerner/][Kurt James Werner]] for help and support down the WDF rabbit hole.
+A big shout out goes to [[https://ccrma.stanford.edu/~kwerner/][Kurt James Werner]] for help and support down the WDF rabbit hole. 
 
 * Post Ideas                                                       :noexport:
 ** Math                                                               :@math:
