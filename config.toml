@@ -26,7 +26,7 @@ pygmentsStyle = "pygments"
   customCodeStyle = false
   customBlockquoteStyle = false
   showPostSummary = false
-  googleAnalytics = ""
+  googleAnalytics = "UA-65029525-1"
   cookieConsent = false
   includeBootstrapJs = false
 
