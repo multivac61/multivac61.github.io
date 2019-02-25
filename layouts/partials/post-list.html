@@ -1,4 +1,3 @@
-<h1>{{ .Name }}</h1>
 {{ range where .Pages.ByPublishDate.Reverse "Section" "post" }}
   <p>
     <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
