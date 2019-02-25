@@ -1,6 +1,18 @@
 {{- define "main" -}}
 
 <h1>{{ .Name }}</h1>
+
+<blockquote class="blockquote text-right">
+    <p class="mb-0">
+        Vita brevis,
+        ars longa,
+        occasio praeceps,
+        experimentum periculosum,
+        iudicium difficile.
+    </p>
+    <footer class="blockquote-footer"><cite title="Source Title">Hippocrates (c. 400BC)</cite></footer>
+</blockquote>
+
 {{ partial "post-list" . }}
 
 {{- end -}}
