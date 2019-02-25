@@ -1,4 +1,5 @@
 languageCode = "en-us"
+baseURL = "https://multivac61.github.io/"
 title = "multivac61.github.io"
 theme = "minimal-bootstrap-hugo-theme"
 pygmentsCodefences = true
