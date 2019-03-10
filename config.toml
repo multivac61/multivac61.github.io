@@ -6,6 +6,8 @@ theme = "minimal-bootstrap-hugo-theme"
 pygmentsCodefences = true
 pygmentsStyle = "pygments"
 
+GoogleAnalytics = "UA-135440863-1"
+
 [taxonomies]
   tag = "tags"
 
@@ -26,6 +28,5 @@ pygmentsStyle = "pygments"
   customCodeStyle = false
   customBlockquoteStyle = false
   showPostSummary = false
-  googleAnalytics = "UA-65029525-1"
   cookieConsent = false
   includeBootstrapJs = false
