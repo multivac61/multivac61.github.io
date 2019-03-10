@@ -6,10 +6,19 @@
     <description>Recent content on multivac61.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 07 Dec 2016 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 10 Mar 2019 19:34:00 +0000</lastBuildDate>
     
 	<atom:link href="https://multivac61.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Reinit</title>
+      <link>https://multivac61.github.io/reinit/</link>
+      <pubDate>Sun, 10 Mar 2019 19:34:00 +0000</pubDate>
+      
+      <guid>https://multivac61.github.io/reinit/</guid>
+      <description>Allright&amp;hellip; Time to get this blog off the ground once again!</description>
+    </item>
     
     <item>
       <title>Intro to modern hardware prototyping</title>
