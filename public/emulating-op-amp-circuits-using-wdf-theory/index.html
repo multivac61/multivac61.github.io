@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-135440863-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <meta name="generator" content="Hugo 0.54.0" />
+
+  
+
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="https://multivac61.github.io/apple-touch-icon.png">
+
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="https://multivac61.github.io/favicon-32x32.png">
+
+  
+  <link rel="icon" type="image/png" sizes="16x16" href="https://multivac61.github.io/favicon-16x16.png">
+
+  
+  <link rel="manifest" href="https://multivac61.github.io/site.webmanifest">
+
+  
+  <link rel="mask-icon" href="https://multivac61.github.io/safari-pinned-tab.svg" color="">
+
+  <meta name="msapplication-TileColor" content="">
+
+  <meta name="theme-color" content="">
+
+  
+  <link rel="stylesheet" href="https://multivac61.github.io/css/bootstrap.min.css" />
+
+  
+  <title>Digitizing analog circuits containing op amps using Wave Digital Filters | multivac61.github.io</title>
+  
+
+  <script type="text/javascript" async
+          src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+   MathJax.Hub.Config({
+       tex2jax: {
+           inlineMath: [['$','$'], ['\\(','\\)']],
+           displayMath: [['$$','$$']],
+           processEscapes: true,
+           processEnvironments: true,
+           skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+           TeX: { equationNumbers: { autoNumber: "AMS" },
+                  extensions: ["AMSmath.js", "AMSsymbols.js"] }
+       }
+   });
+   MathJax.Hub.Queue(function() {
+       
+       
+       
+       var all = MathJax.Hub.getAllJax(), i;
+       for(i = 0; i < all.length; i += 1) {
+           all[i].SourceElement().parentNode.className += ' has-jax';
+       }
+   });
+
+   MathJax.Hub.Config({
+       
+       TeX: { equationNumbers: { autoNumber: "AMS" } }
+   });
+  </script>
+
+  <style>
+body {
+  min-width: 300px;
+}
+
+.custom-navbar {
+  margin-bottom: 1em;
+  height: 60px;
+}
+
+.custom-navbar a {
+  display: inline-block; 
+  padding: 18px 0;
+  margin-right: 1em; 
+  font-weight: bold; 
+}
+
+.custom-navbar a:hover,
+.custom-navbar a:focus {
+  text-decoration: none; 
+}
+
+@media print {
+  .custom-navbar {
+    display: none;
+  }
+}
+
+article {
+  padding-bottom: 1em;
+}
+
+img {
+  max-width: 100%;
+}
+
+
+body {
+  background-color: #fff;
+}
+
+
+
+body {
+  color: #212529;
+}
+
+
+
+a {
+  color: #007bff;
+}
+
+
+
+a:hover,
+a:focus {
+  color: #0056b3;
+}
+
+
+
+.custom-navbar {
+  background-color: #ffffff;
+}
+
+
+
+.custom-navbar a {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+
+
+.custom-navbar a:hover,
+.custom-navbar a:focus {
+  color: rgba(255, 255, 255, 1);
+}
+
+
+
+.container {
+  max-width: 800px;
+}
+
+
+
+
+
+</style>
+</head>
+
+
+<body>
+  
+  
+  <div class="container">
+    <article>
+      <h1>Digitizing analog circuits containing op amps using Wave Digital Filters</h1>
+<p>
+  <small class="text-secondary">
+  
+  
+  Mar 20, 2016, updated Feb 24, 2019
+  </small>
+  
+
+<small><code><a href="https://multivac61.github.io/tags/dsp">dsp</a></code></small>
+
+</p>
+
+
+<p>In this post I will share some work I have been doing on Wave Digital Filters, or WDFs for short. WDFs allows one to digitize analog reference circuits in a way that retains the underlying topology, has nice numerical properties, allows for breaking up of annoying delay-free loops when digitizing and has a very nice modular way of dealing with non-linearities. I will not explain the basic WDF theory here but if you are interested the <a href="http://www.eit.lth.se/fileadmin/eit/courses/eit085f/Fettweis%5FWave%5FDigital%5FFilters%5FTheory%5Fand%5FPractice%5FIEEE%5FProc%5F1986%5F-%5FThis%5Fis%5Fa%5Freal%5Fchallange.pdf">omnipotent paper</a> on the subject written by Fettweis, the creator of WDF, or <a href="https://ccrma.stanford.edu/~dtyeh/papers/wdftutorial.pdf">this tutorial</a> on WDF should get you familiar with the topic.</p>
+
+<p>Until very recently the WDF formalism has only worked on reference circuits that can be decomposed into parallel or series sub-circuits. Since many circuits in the wild have much more complicated topologies, the scope of reference circuits available for digital modelling using WDF has been very limited. Late last year there was a paper published called <a href="https://www.ntnu.edu/documents/1001201110/1266017954/DAFx-15%5Fsubmission%5F53.pdf/a559ce90-d16b-49a3-a267-5b877d7fe70b">Wave Digital Filter Adaptors for Arbitraty Topologies and Multiport Linear Elements</a>. In it this issue was addressed by showing how arbitrary topologies may be handled within the WDF formalism. That was achieved by some cleaver usage of the ubiquitous <a href="https://en.wikipedia.org/wiki/Modified%5Fnodal%5Fanalysis">MNA method</a>. In essence the method starts out with a reference circuit, extracts all series/parallel sub-circuits and uses the MNA method on the remaining components and connections. The trick is to allow active elements to clump up inside the non series/parallel adaptors, commonly known as R-type (rigid) adaptors and then figure out how the outcoming waves depend on the incoming ones (scattering matrix).</p>
+
+<p>Now I will give two examples of how to use this new method on circuits previously unobtainable under the WDF formalism. To warm up I will start off by coming up with a WDF structure for the <a href="https://en.wikipedia.org/wiki/Buffer%5Famplifier">buffer amplifier</a>.</p>
+
+<h2 id="op-amp-buffer-circuit">Op amp buffer circuit</h2>
+
+<p>Following the steps developed in Wave Digital Filter Adaptors for Arbitraty Topologies.. I start out with a reference circuit, then approximate the op amp using a simple op amp model. I use a infinitely large resistor between the input poles so that I can use it when adapting for the port facing the voltage source (the only non-linear element that needs adapting).</p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<p><img src="/images/wdf_buffer1.png" alt="" />
+<img src="/images/wdf_buffer2.png" alt="" />
+<img src="/images/wdf_buffer1_approx.png" alt="" /></p>
+
+<p></div></p>
+
+<p>The next step is to form a so called replacement graph and find split components within it. The series/parallel adaptors that I find I remove from the graph and the remaining connections will fall inside the R-type adaptor we have to derive (it is impossible to further decompose the connections into more series/parallel connectors).</p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<figure>
+    <img src="/images/wdf_buffer3.png"/> 
+</figure>
+
+
+<p></div></p>
+
+<p>Now that we have the two WDF adaptors (series S, and a rigid one R) found in the approximated reference circuit we can find how incoming/outgoing waves are reflected when they reach the R-type adaptor. We do that by finding the scattering matrix which is obtainable by using <a href="http://www.swarthmore.edu/NatSci/echeeve1/Ref/mna/MNA5.html">Modified Nodal Analysis</a>. I chose to adapt the scattering matrix to the input voltage source instead of using a resistive voltage source for simplicity&rsquo;s sake.</p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<figure>
+    <img src="/images/wdf_buffer4.png"/> 
+</figure>
+
+
+<p></div></p>
+
+<p>This is the underlying WDF structure.</p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<figure>
+    <img src="/images/wdf_buffer5.png"/> 
+</figure>
+
+
+<p></div></p>
+
+<p>Place a voltage source and resistor on all ports and then populate the MNA matrix.</p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<figure>
+    <img src="/images/wdf_buffer6.png"/> 
+</figure>
+
+
+<p></div></p>
+
+<p>Modified Nodal Analysis matrix which we can use to figure out the scattering matrix.</p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<figure>
+    <img src="/images/wdf_buffer7.png"/> 
+</figure>
+
+
+<p></div></p>
+
+<p>Here is the SPQR tree that indicates how the computation of the WDF structure can be done. In each iteration the waves travel from the lowest part of the tree all the way to the top and then back after the input signal has been injected.</p>
+
+<h3 id="software-implementation">Software implementation</h3>
+
+<p>Next I implemented the WDF model in Matlab code along with a simple LTspice simulation. Then I plotted the frequency response..</p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<figure>
+    <img src="/images/wdf_volt_follower.png"/> 
+</figure>
+
+
+<p></div></p>
+
+<p>As expected the buffer circuit holds the input at unity for all frequencies and the frequency response is visually not different from the ground truth LTspice simulation.</p>
+
+<h2 id="sallen-key-low-pass-filter">Sallen-Key low pass filter</h2>
+
+<p>Next I move on to a bit more interesting reference circuit, the <a href="https://en.wikipedia.org/wiki/Sallen%E2%80%93Key%5Ftopology#Application:%5FLow-pass%5Ffilter">lowpass Sallen-Key filter</a>. The steps are exactly the same as above.</p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<figure>
+    <img src="/images/wdf_sk1.png"/> 
+</figure>
+
+
+<p></div></p>
+
+<p>We start out with a reference circuit..</p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<figure>
+    <img src="/images/wdf_sk2.png"/> 
+</figure>
+
+
+<p></div></p>
+
+<p>Approximate the op amp like before..</p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<figure>
+    <img src="/images/wdf_sk_spqr.png"/> 
+</figure>
+
+
+<p></div></p>
+
+<p>Generate the reference graph and find split components (again one series and one R-type adaptor)&hellip;</p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<p><img src="/images/wdf_sk5.png" alt="" />
+<img src="/images/wdf_sk4.png" alt="" />
+<img src="/images/wdf_buffer6-1.png" alt="" /></p>
+
+<p></div></p>
+
+<p>Populate the MNA matrix and write out the SPQR tree.</p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<figure>
+    <img src="/images/wdf_sk3.png"/> 
+</figure>
+
+
+<p></div></p>
+
+<h3 id="software-implementation-1">Software implementation</h3>
+
+<p>Again I coded up the WDF strucute and compared its frequency response with frequency response coming from LTspice.</p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<figure>
+    <img src="/images/wdf_sallen_key_lp.png"/> 
+</figure>
+
+
+<p></div></p>
+
+<h2 id="demos">Demos</h2>
+
+<p>Just to give a simple demo I put a funk drum beat and put it through the Sallen-Key lowpass filter WDF structure with a cutoff frequency of ~1 kHz.</p>
+
+<p><br>
+<iframe width="100%" height="450" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/207645541&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe></p>
+
+<h2 id="final-thoughts">Final thoughts</h2>
+
+<p>There are still many circuits that are impossible to model using state-of-the-art WDF theory. An example are circuits that have global feedback (such as the MS-20 filter). Fundamental research in the field is active at the moment and hopefully within a few years those circuits will also be able to model using WDFs.</p>
+
+<p>A big shout out goes to <a href="https://ccrma.stanford.edu/~kwerner/">Kurt James Werner</a> for help and support down the WDF rabbit hole.</p>
+
+    </article>
+  </div>
+
+  
+  
+  
+
+  
+</body>
+
+</html>

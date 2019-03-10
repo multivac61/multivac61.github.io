@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ai on multivac61.github.io</title>
+    <link>https://multivac61.github.io/tags/ai/</link>
+    <description>Recent content in Ai on multivac61.github.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 18 Dec 2015 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://multivac61.github.io/tags/ai/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Fundamental frequency estimation and supervised learning</title>
+      <link>https://multivac61.github.io/fundamental-frequency-estimation-and-machine-learning/</link>
+      <pubDate>Fri, 18 Dec 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://multivac61.github.io/fundamental-frequency-estimation-and-machine-learning/</guid>
+      <description>This post is a report on a final project I did in a music technology graduate seminar, MUMT-605, offered at McGill in the fall of 2015.
+Fundamental frequency estimation Fundamental frequency (f0) estimation (sometimes also called pitch detection, see Appendix A) has been an active topic of research within the field of audio signal processing for many years. Currently there exist literally hundreds of estimation methods that most do fairly well when the sound source is monophonic and noiseless but tend to differ greatly in accuracy when applied in less ideal situations [1, 4].</description>
+    </item>
+    
+    <item>
+      <title>A Knight&#39;s Tour</title>
+      <link>https://multivac61.github.io/knights_tour/</link>
+      <pubDate>Fri, 23 Oct 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://multivac61.github.io/knights_tour/</guid>
+      <description>Another interesting problem relating to classical search in AI is the Knight&amp;rsquo;s Tour.
+A knight&amp;rsquo;s tour is a sequence of moves of a knight on a chessboard such that the knight visits every square only once. If the knight ends on a square that is one knight&amp;rsquo;s move from the beginning square (so that it could tour the board again immediately, following the same path), the tour is closed, otherwise it is open.</description>
+    </item>
+    
+    <item>
+      <title>The problem with N queens</title>
+      <link>https://multivac61.github.io/n_queens_problem/</link>
+      <pubDate>Wed, 21 Oct 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://multivac61.github.io/n_queens_problem/</guid>
+      <description>I&amp;rsquo;m currently taking an introductory course in AI at McGill. In reality the course is not really an introductory course as it covers a broad range of theory and is extremely demanding (as in bloody hard). That being said I feel like I&amp;rsquo;m getting a good overview of the general landscape of AI, which is awesome.
+The course textbook we&amp;rsquo;re using is AI: A Modern Approach. In a chapter about classical search the authors talk about a problem called the 8-Queens problem.</description>
+    </item>
+    
+    <item>
+      <title>Sorting algorithms in Python</title>
+      <link>https://multivac61.github.io/sorting_algorithms_in_python/</link>
+      <pubDate>Sat, 03 Oct 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://multivac61.github.io/sorting_algorithms_in_python/</guid>
+      <description>Recently I&amp;rsquo;ve been doing some coding in Python but I felt like I didn&amp;rsquo;t really understand what was going on. So as a way to better understand python&amp;rsquo;s syntax and semantics I implemented a couple of the better known sorting algorithms - for fun and the greater good!
+This post showcases the code I wrote and talks about the hurdles I encountered while implementing the algorithms. This post is only meant to document my learning process of Python implementations and not really meant for learning about the mathematics behind the space- and time complexities of the different sort algorithms as I had already done that in my EE undergrad.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-135440863-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <meta name="generator" content="Hugo 0.54.0" />
+
+  
+
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="https://multivac61.github.io/apple-touch-icon.png">
+
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="https://multivac61.github.io/favicon-32x32.png">
+
+  
+  <link rel="icon" type="image/png" sizes="16x16" href="https://multivac61.github.io/favicon-16x16.png">
+
+  
+  <link rel="manifest" href="https://multivac61.github.io/site.webmanifest">
+
+  
+  <link rel="mask-icon" href="https://multivac61.github.io/safari-pinned-tab.svg" color="">
+
+  <meta name="msapplication-TileColor" content="">
+
+  <meta name="theme-color" content="">
+
+  
+  <link rel="stylesheet" href="https://multivac61.github.io/css/bootstrap.min.css" />
+
+  
+  <title>A Knight&#39;s Tour | multivac61.github.io</title>
+  
+
+  <script type="text/javascript" async
+          src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+   MathJax.Hub.Config({
+       tex2jax: {
+           inlineMath: [['$','$'], ['\\(','\\)']],
+           displayMath: [['$$','$$']],
+           processEscapes: true,
+           processEnvironments: true,
+           skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+           TeX: { equationNumbers: { autoNumber: "AMS" },
+                  extensions: ["AMSmath.js", "AMSsymbols.js"] }
+       }
+   });
+   MathJax.Hub.Queue(function() {
+       
+       
+       
+       var all = MathJax.Hub.getAllJax(), i;
+       for(i = 0; i < all.length; i += 1) {
+           all[i].SourceElement().parentNode.className += ' has-jax';
+       }
+   });
+
+   MathJax.Hub.Config({
+       
+       TeX: { equationNumbers: { autoNumber: "AMS" } }
+   });
+  </script>
+
+  <style>
+body {
+  min-width: 300px;
+}
+
+.custom-navbar {
+  margin-bottom: 1em;
+  height: 60px;
+}
+
+.custom-navbar a {
+  display: inline-block; 
+  padding: 18px 0;
+  margin-right: 1em; 
+  font-weight: bold; 
+}
+
+.custom-navbar a:hover,
+.custom-navbar a:focus {
+  text-decoration: none; 
+}
+
+@media print {
+  .custom-navbar {
+    display: none;
+  }
+}
+
+article {
+  padding-bottom: 1em;
+}
+
+img {
+  max-width: 100%;
+}
+
+
+body {
+  background-color: #fff;
+}
+
+
+
+body {
+  color: #212529;
+}
+
+
+
+a {
+  color: #007bff;
+}
+
+
+
+a:hover,
+a:focus {
+  color: #0056b3;
+}
+
+
+
+.custom-navbar {
+  background-color: #ffffff;
+}
+
+
+
+.custom-navbar a {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+
+
+.custom-navbar a:hover,
+.custom-navbar a:focus {
+  color: rgba(255, 255, 255, 1);
+}
+
+
+
+.container {
+  max-width: 800px;
+}
+
+
+
+
+
+</style>
+</head>
+
+
+<body>
+  
+  
+  <div class="container">
+    <article>
+      <h1>A Knight&rsquo;s Tour</h1>
+<p>
+  <small class="text-secondary">
+  
+  
+  Oct 23, 2015, updated Feb 24, 2019
+  </small>
+  
+
+<small><code><a href="https://multivac61.github.io/tags/ai">ai</a></code></small>
+
+
+<small><code><a href="https://multivac61.github.io/tags/python">python</a></code></small>
+
+</p>
+<p>Another interesting problem relating to classical search in AI is the Knight&rsquo;s Tour.</p>
+
+<p><em>A knight&rsquo;s tour is a sequence of moves of a knight on a chessboard such that the knight visits every square only once. If the knight ends on a square that is one knight&rsquo;s move from the beginning square (so that it could tour the board again immediately, following the same path), the tour is closed, otherwise it is open. <a href="https://en.wikipedia.org/wiki/Knight's%5Ftour">Wikipedia</a></em></p>
+
+<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
+
+<div class="org-center">
+  <div></div>
+
+<figure>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Knights-Tour-Animation.gif"/> 
+</figure>
+
+
+<p></div></p>
+
+<p>I implemented a solution that tries to perform a open path tour and returns a list of squares the knight has to travel to from begin to end. I found no need to use the simpleai library this time. Instead used a <a href="https://en.wikipedia.org/wiki/Best-first%5Fsearch">greedy search</a> that will always take the action that results in a state with the fewest actions possible, otherwise known as the Warnsdorf&rsquo;s rule. If it doesn&rsquo;t find a path in the first case it will simply return an error for the given N and start point.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">KnightsTour</span>():
+    <span style="color:#ba2121">&#39;&#39;&#39;Knights Tour using Warnsdorf&#39;s rule as heuristics&#39;&#39;&#39;</span>
+
+    <span style="color:#008000;font-weight:bold">def</span> __init__(self, N, start_point<span style="color:#666">=</span>(<span style="color:#666">0</span>,<span style="color:#666">0</span>)):
+        self<span style="color:#666">.</span>N             <span style="color:#666">=</span> N
+        self<span style="color:#666">.</span>initial_state <span style="color:#666">=</span> (start_point, )
+        <span style="color:#408080;font-style:italic"># all relative moves expressed as displacement in 2D</span>
+        self<span style="color:#666">.</span>_actions      <span style="color:#666">=</span> [(<span style="color:#666">1</span>,<span style="color:#666">2</span>), (<span style="color:#666">1</span>,<span style="color:#666">-</span><span style="color:#666">2</span>), (<span style="color:#666">2</span>,<span style="color:#666">1</span>), (<span style="color:#666">2</span>,<span style="color:#666">-</span><span style="color:#666">1</span>),\
+                              (<span style="color:#666">-</span><span style="color:#666">1</span>,<span style="color:#666">2</span>), (<span style="color:#666">-</span><span style="color:#666">1</span>,<span style="color:#666">-</span><span style="color:#666">2</span>), (<span style="color:#666">-</span><span style="color:#666">2</span>,<span style="color:#666">1</span>), (<span style="color:#666">-</span><span style="color:#666">2</span>,<span style="color:#666">-</span><span style="color:#666">1</span>)]
+
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">actions</span>(self, s):
+        <span style="color:#ba2121">&#39;&#39;&#39;Possible actions from a state.&#39;&#39;&#39;</span>
+        <span style="color:#408080;font-style:italic"># generate every possible state and filter unvalid ones</span>
+        <span style="color:#008000;font-weight:bold">return</span> [a <span style="color:#008000;font-weight:bold">for</span> a <span style="color:#a2f;font-weight:bold">in</span> self<span style="color:#666">.</span>_actions <span style="color:#008000;font-weight:bold">if</span> self<span style="color:#666">.</span>_is_valid(self<span style="color:#666">.</span>result(s, a))]
+
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">result</span>(self, s, a):
+        <span style="color:#ba2121">&#39;&#39;&#39;Result of applying an action to a state.&#39;&#39;&#39;</span>
+        last_x, last_y <span style="color:#666">=</span> s[<span style="color:#666">-</span><span style="color:#666">1</span>];
+        delta_x, delta_y <span style="color:#666">=</span> a
+
+        b <span style="color:#666">=</span> <span style="color:#008000">list</span>(s)     <span style="color:#408080;font-style:italic"># make mutable to add next move</span>
+        b<span style="color:#666">.</span>append((last_x<span style="color:#666">+</span>delta_x, last_y<span style="color:#666">+</span>delta_y))
+        <span style="color:#008000;font-weight:bold">return</span> <span style="color:#008000">tuple</span>(b) <span style="color:#408080;font-style:italic"># immutable to search</span>
+
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">_is_valid</span>(self, state):
+        last_s <span style="color:#666">=</span> state[<span style="color:#666">-</span><span style="color:#666">1</span>]
+        <span style="color:#008000;font-weight:bold">if</span> last_s <span style="color:#a2f;font-weight:bold">in</span> state[:<span style="color:#666">-</span><span style="color:#666">1</span>]:
+            <span style="color:#008000;font-weight:bold">return</span> False
+
+        <span style="color:#008000;font-weight:bold">for</span> (sx, sy) <span style="color:#a2f;font-weight:bold">in</span> state:
+            <span style="color:#008000;font-weight:bold">if</span> ( <span style="color:#a2f;font-weight:bold">not</span> (<span style="color:#666">0</span> <span style="color:#666">&lt;=</span> sx <span style="color:#666">&lt;</span> self<span style="color:#666">.</span>N) <span style="color:#a2f;font-weight:bold">or</span>  <span style="color:#a2f;font-weight:bold">not</span> (<span style="color:#666">0</span> <span style="color:#666">&lt;=</span> sy <span style="color:#666">&lt;</span> self<span style="color:#666">.</span>N) ):
+                <span style="color:#008000;font-weight:bold">return</span> False
+
+        <span style="color:#008000;font-weight:bold">return</span> True
+
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">heuristic</span>(self, state):
+        <span style="color:#408080;font-style:italic"># how many actions can be performed in given state</span>
+        <span style="color:#008000;font-weight:bold">return</span> <span style="color:#008000">len</span>(self<span style="color:#666">.</span>actions(state))
+
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">go_on_a_ride</span>(self):
+        s <span style="color:#666">=</span> self<span style="color:#666">.</span>initial_state
+        <span style="color:#008000;font-weight:bold">for</span> i <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(self<span style="color:#666">.</span>N<span style="color:#666">**</span><span style="color:#666">2</span><span style="color:#666">-</span><span style="color:#666">1</span>):
+            <span style="color:#408080;font-style:italic"># get all state and their respective heuristics</span>
+            d <span style="color:#666">=</span> {i: self<span style="color:#666">.</span>heuristic(self<span style="color:#666">.</span>result(s, i)) <span style="color:#008000;font-weight:bold">for</span> i <span style="color:#a2f;font-weight:bold">in</span> self<span style="color:#666">.</span>actions(s)}
+            a <span style="color:#666">=</span> <span style="color:#008000">min</span>(d, key<span style="color:#666">=</span>d<span style="color:#666">.</span>get) <span style="color:#408080;font-style:italic"># get the action that leads to a state</span>
+            <span style="color:#408080;font-style:italic"># that has least possible actions</span>
+            s <span style="color:#666">=</span> self<span style="color:#666">.</span>result(s, a)
+            <span style="color:#008000;font-weight:bold">if</span> <span style="color:#a2f;font-weight:bold">not</span> s:
+                <span style="color:#008000;font-weight:bold">print</span>(<span style="color:#ba2121">&#34;Sorry no Knights tour starting from&#34;</span>, self<span style="color:#666">.</span>start_point)
+                <span style="color:#008000;font-weight:bold">return</span>
+            self<span style="color:#666">.</span>print_board(s)
+
+    <span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">print_board</span>(self, s):
+        board <span style="color:#666">=</span> s
+        N     <span style="color:#666">=</span> self<span style="color:#666">.</span>N
+        <span style="color:#008000;font-weight:bold">for</span> i <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(N):
+            <span style="color:#008000;font-weight:bold">for</span> j <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(N):
+                <span style="color:#008000;font-weight:bold">if</span> (i,j) <span style="color:#a2f;font-weight:bold">in</span> board:
+                    <span style="color:#008000;font-weight:bold">print</span>(<span style="color:#ba2121">&#34;</span><span style="color:#b68;font-weight:bold">%3s</span><span style="color:#ba2121">&#34;</span> <span style="color:#666">%</span> s<span style="color:#666">.</span>index((i,j)), end<span style="color:#666">=</span><span style="color:#ba2121">&#39;&#39;</span>)
+                <span style="color:#008000;font-weight:bold">else</span>:
+                    <span style="color:#008000;font-weight:bold">print</span>(<span style="color:#ba2121">&#39;.&#39;</span>, end<span style="color:#666">=</span><span style="color:#ba2121">&#39;&#39;</span>)
+                    <span style="color:#008000;font-weight:bold">print</span>(<span style="color:#ba2121">&#39;&#39;</span>)
+
+<span style="color:#408080;font-style:italic">## Define the size of board NxN and the start point</span>
+problem <span style="color:#666">=</span> KnightsTour(N<span style="color:#666">=</span><span style="color:#666">8</span>, start_point<span style="color:#666">=</span>(<span style="color:#666">0</span>,<span style="color:#666">0</span>))
+problem<span style="color:#666">.</span>go_on_a_ride()</code></pre></div>
+    </article>
+  </div>
+
+  
+  
+  
+
+  
+</body>
+
+</html>
