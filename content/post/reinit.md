@@ -8,4 +8,4 @@ categories = ["general"]
 draft = false
 +++
 
-Allright.. Time to get this blog off the ground once again!
+Allright... Time to get this blog off the ground once again!
