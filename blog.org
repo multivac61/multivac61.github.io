@@ -21,7 +21,7 @@ CLOSED: [2019-03-10 sun 19:34]
 :EXPORT_FILE_NAME: reinit
 :END:
      
-Allright! Time to get this blog off the ground again.
+Allright.. Time to get this blog off the ground once again!
      
 ** Python                                                         :@python:
 *** Note to self.self: List comprehensions in Python 2.x leak!                                                        :python:
