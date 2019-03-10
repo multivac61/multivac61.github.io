@@ -2,10 +2,11 @@
 
 echo -e "\033[0;32mDeploying updates to GitHub...\033[0m"
 
-git checkout master
 
 # Build the project.
-hugo # if using a theme, replace with `hugo -t <YOURTHEME>`
+hugo -t minimal-bootstrap-hugo-theme # if using a theme, replace with `hugo -t <YOURTHEME>`
+
+git checkout master
 
 # Go To Public folder
 cd public

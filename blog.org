@@ -13,17 +13,15 @@
 :PROPERTIES:
 :VISIBILITY: children
 :END:
-*** TODO Reinit                                                   :general:
+*** DONE Reinit                                                   :general:
+CLOSED: [2019-03-10 sun 19:34]
 :PROPERTIES:
 :EXPORT_DATE: 2019-02-18
 :EXPORT_HUGO_LASTMOD: 2019-02-19
 :EXPORT_FILE_NAME: reinit
 :END:
-#+BEGIN_SRC
-    ars longa, vita brevis, occasio praeceps, experimentum periculosum, iudicium difficile.
-#+END_SRC
      
-$ e ^ {i \pi} = -1 $
+Allright! Time to get this blog off the ground again.
      
 ** Python                                                         :@python:
 *** Note to self.self: List comprehensions in Python 2.x leak!                                                        :python:
